@@ -11,6 +11,7 @@ class PostController extends Controller
 {
 
     protected $postRepository;    
+    
     function __construct(PostRepository $postRepository)
     {
         $this->postRepository = $postRepository;
@@ -29,7 +30,7 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return $this->postRepository->store($request->all());
     }
 
     /**
@@ -37,7 +38,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return $this->postRepository->show($post);
     }
 
     /**
@@ -45,7 +46,7 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        return $this->postRepository->update($request->all(),$post);
     }
 
     /**
@@ -53,6 +54,6 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        return $this->postRepository->destroy($post);
     }
 }

@@ -5,13 +5,15 @@ namespace App\Http\Controllers\api\v1\post;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\api\v1\post\StorePostRequest;
+use App\Http\Requests\api\v1\post\UpdatePostRequest;
 use App\Repositories\api\v1\post\PostRepository;
 
 class PostController extends Controller
 {
 
-    protected $postRepository;    
-    
+    protected $postRepository;
+
     function __construct(PostRepository $postRepository)
     {
         $this->postRepository = $postRepository;
@@ -28,9 +30,9 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
-        return $this->postRepository->store($request->all());
+        return $this->postRepository->store($request->validated());
     }
 
     /**
@@ -44,9 +46,9 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Post $post)
+    public function update(UpdatePostRequest $request, Post $post)
     {
-        return $this->postRepository->update($request->all(),$post);
+        return $this->postRepository->update($request->validated(),$post);
     }
 
     /**

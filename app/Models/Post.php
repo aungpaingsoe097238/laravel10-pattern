@@ -2,13 +2,36 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Log;
+
 
 class Post extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['tilte'];
+    protected $fillable = ['title', 'category_id'];
 
+    public function scopeFilter($query, $filter)
+    {
+        if (isset($filter['search'])) {
+            $query->where('title', 'LIKE', "%{$filter['search']}%");
+        }
+
+        if (isset($filter['category_id'])) {
+            $query->where('category_id', $filter['category_id']);
+        }
+
+        if (isset($filter['from_date'])) {
+            $query->whereDate();
+        }
+
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

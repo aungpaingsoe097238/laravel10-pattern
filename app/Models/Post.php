@@ -25,9 +25,13 @@ class Post extends Model
         }
 
         if (isset($filter['from_date'])) {
-            $query->whereDate();
+            if (isset($filter['to_date'])) {
+                $query->whereBetween('created_at', [$filter['from_date'], $filter['to_date']]);
+            } else {
+                $query->whereDate('created_at', $filter['from_date']);
+            }
         }
-
+        
     }
 
     public function category()

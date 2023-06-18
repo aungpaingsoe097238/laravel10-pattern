@@ -23,7 +23,7 @@ class StorePostRequest extends FormRequest
     {
         return [
             'title' => 'string|required',
-            'category_id' => 'required|exists:category,id|numeric'
+            'category_id' => 'required|exists:categories,id|numeric'
         ];
     }
 }

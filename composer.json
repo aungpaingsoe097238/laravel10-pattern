@@ -13,8 +13,9 @@
         "laravel/telescope": "^4.14",
         "laravel/tinker": "^2.8",
         "league/oauth2-server": "8.5.2",
-        "nesbot/carbon": "^2.67"
-     },
+        "nesbot/carbon": "^2.67",
+        "spatie/laravel-permission": "^5.10"
+    },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.13",
         "fakerphp/faker": "^1.9.1",

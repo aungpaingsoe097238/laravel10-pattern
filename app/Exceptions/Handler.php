@@ -5,8 +5,8 @@ namespace App\Exceptions;
 use Throwable;
 use Illuminate\Http\Response;
 use Illuminate\Auth\AuthenticationException;
-use Illuminate\Validation\UnauthorizedException;
 use Illuminate\Auth\Access\AuthorizationException;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -36,14 +36,14 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $e)
     {
+        if ($e instanceof UnauthorizedException) {
+            return response(['status' => false, 'message' => 'User does not have the right permissions.'], Response::HTTP_UNAUTHORIZED);
+        }
         if ($e instanceof AuthenticationException) {
             return $this->unauthenticated($request, $e);
         }
         if ($e instanceof AuthorizationException) {
-            return response()->json(['status' => 2, 'message' => $e->getMessage()], Response::HTTP_UNAUTHORIZED);
-        }
-        if ($e instanceof UnauthorizedException) {
-            return response()->json(['status' => 2, 'message' => $e->getMessage()], Response::HTTP_UNAUTHORIZED);
+            return response()->json(['status' => false, 'message' => $e->getMessage()], Response::HTTP_UNAUTHORIZED);
         }
         if ($e instanceof ModelNotFoundException) {
             // Change model name to lower case

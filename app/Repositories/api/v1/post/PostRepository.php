@@ -37,7 +37,8 @@ class PostRepository implements PostRepositoryInterface
     public function store(array $data)
     {
         $post = Post::create([
-            'title' => $data['title']
+            'title' => $data['title'],
+            'category_id' => $data['category_id']
         ]);
         return new PostResource($post);
     }

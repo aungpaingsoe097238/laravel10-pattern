@@ -9,7 +9,7 @@ interface PostRepositoryInterface
 {
     public function index();
     public function show(Post $post);
-    public function store(array $array);
-    public function update(array $array,Post $post);
+    public function store(array $data);
+    public function update(array $data,Post $post);
     public function destroy(Post $post);
 }

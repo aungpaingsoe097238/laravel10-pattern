@@ -9,6 +9,7 @@ use Illuminate\Validation\UnauthorizedException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -49,5 +50,10 @@ class Handler extends ExceptionHandler
             $message = strtolower(class_basename($e->getModel()));
             return response()->json(['status' => false, 'message' => "Can't find $message"], Response::HTTP_NOT_FOUND);
         }
+        if ($e instanceof NotFoundHttpException) {
+            return response()->json(['status' => false, 'message' => 'Incorect route'], Response::HTTP_NOT_FOUND);
+        }
+
+        return parent::render($request, $e);
     }
 }

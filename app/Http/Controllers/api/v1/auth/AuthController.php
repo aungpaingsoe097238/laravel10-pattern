@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\api\v1\auth;
 
+use Hash;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Repositories\BaseRepository;
-use Hash;
+use App\Http\Resources\api\v1\auth\AuthResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -32,9 +32,9 @@ class AuthController extends Controller
 
         return response()->json([
             'data' => $user,
-            'message' => 'user registation successfully',
-            'status' => true
-        ], 201);
+            'message' => 'successfully',
+            'status' => false
+        ], 200);
     }
 
     public function login(Request $request)
@@ -44,9 +44,38 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $user['token'] = $user->createToken('laravel10')->accessToken;
-            return response()->json(['data' => $user, 'status' => true], 200);
+            return new AuthResource($user);
         } else {
-            return response()->json(['message' => 'Unauthorized', 'status' => false], 401);
+            return response()->json(['message' => 'unauthorized', 'status' => false], 401);
         }
+    }
+
+    public function logout()
+    {
+        $user = Auth::user()->token();
+        $user->revoke();
+        return response()->json([
+            'status' => true,
+            'message' => 'logout successfully'
+        ], 200);
+    }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json(['error' => 'The current password is incorrect.'], 401);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json(['message' => 'password changed successfully', 'status' => true], 200);
     }
 }

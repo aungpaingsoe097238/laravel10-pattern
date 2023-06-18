@@ -5,6 +5,8 @@ namespace App\Http\Controllers\api\v1\category;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\api\v1\category\StoreCategoryRequest;
+use App\Http\Requests\api\v1\category\UpdateCategoryRequest;
 use App\Repositories\api\v1\category\CategoryRepository;
 
 class CategoryController extends Controller
@@ -28,7 +30,7 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request)
     {
         return $this->categoryRepository->store($request->all());
     }
@@ -44,7 +46,7 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(UpdateCategoryRequest $request, Category $category)
     {
         return $this->categoryRepository->update($request->all(),$category);
     }

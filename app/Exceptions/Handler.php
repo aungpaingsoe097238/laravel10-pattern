@@ -26,7 +26,7 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-            
+
         });
     }
 
@@ -35,7 +35,7 @@ class Handler extends ExceptionHandler
         if ($e instanceof ModelNotFoundException) {
             // Change model name to lower case
             $message = strtolower(class_basename($e->getModel()));
-            return response()->json(['status' => 2, 'message' => "Can't find $message"], Response::HTTP_NOT_FOUND);
+            return response()->json(['status' => false, 'message' => "Can't find $message"], Response::HTTP_NOT_FOUND);
         }
     }
 }

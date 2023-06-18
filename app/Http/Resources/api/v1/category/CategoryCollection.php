@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\api\v1\post;
+namespace App\Http\Resources\api\v1\category;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class PostCollection extends ResourceCollection
+class CategoryCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -16,7 +16,8 @@ class PostCollection extends ResourceCollection
     {
         return parent::toArray($request);
     }
-    /**
+
+        /**
      * Get additional data that should be returned with the resource array.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -26,7 +27,7 @@ class PostCollection extends ResourceCollection
     {
         return [
             'message' => 'successfully',
-            'status' => true,
+            'status' => true
         ];
     }
 }

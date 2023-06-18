@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\api\v1\post;
 
+use App\Http\Resources\api\v1\category\CategoryResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -17,7 +18,7 @@ class PostResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'category' => $this->category,
+            'category' => new CategoryResource($this->category),
             'category_id' => $this->category->id,
             'created_at' => $this->created_at->format('Y-m-d')
         ];
@@ -32,7 +33,7 @@ class PostResource extends JsonResource
     {
         return [
             'message' => 'successfully',
-            'status' => 1,
+            'status' => true,
         ];
     }
 }

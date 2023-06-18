@@ -4,6 +4,9 @@ namespace App\Exceptions;
 
 use Throwable;
 use Illuminate\Http\Response;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Validation\UnauthorizedException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
@@ -32,6 +35,15 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $e)
     {
+        if ($e instanceof AuthenticationException) {
+            return $this->unauthenticated($request, $e);
+        }
+        if ($e instanceof AuthorizationException) {
+            return response()->json(['status' => 2, 'message' => $e->getMessage()], Response::HTTP_UNAUTHORIZED);
+        }
+        if ($e instanceof UnauthorizedException) {
+            return response()->json(['status' => 2, 'message' => $e->getMessage()], Response::HTTP_UNAUTHORIZED);
+        }
         if ($e instanceof ModelNotFoundException) {
             // Change model name to lower case
             $message = strtolower(class_basename($e->getModel()));

@@ -17,7 +17,7 @@ class CategoryController extends Controller
     public function __construct(CategoryRepository $categoryRepository)
     {
         $this->categoryRepository = $categoryRepository;
-        $this->middleware('permission:category_list|category_create|category_edit|category_delete', ['except' => ['index','show']]);
+        $this->middleware('permission:category_list|category_create|category_edit|category_delete', ['except' => ['index', 'show']]);
     }
 
     /**
@@ -49,7 +49,7 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        return $this->categoryRepository->update($request->all(),$category);
+        return $this->categoryRepository->update($request->all(), $category);
     }
 
     /**

@@ -2,10 +2,10 @@
 
 namespace App\Repositories\api\v1\category;
 
-use App\Http\Resources\api\v1\category\CategoryCollection;
-use App\Http\Resources\api\v1\category\CategoryResource;
 use App\Models\Category;
-use App\Repositories\Interfaces\CategoryRepositoryInterface;
+use App\Http\Resources\api\v1\category\CategoryResource;
+use App\Http\Resources\api\v1\category\CategoryCollection;
+use App\Repositories\Interfaces\category\CategoryRepositoryInterface;
 
 class CategoryRepository implements CategoryRepositoryInterface
 {

@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Repositories\Interfaces;
+namespace App\Repositories\Interfaces\post;
 
 use App\Models\Post;
-use PHPUnit\Framework\Test;
 
 interface PostRepositoryInterface
 {

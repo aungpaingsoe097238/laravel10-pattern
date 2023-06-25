@@ -2,11 +2,11 @@
 
 namespace App\Repositories\api\v1\post;
 
-use App\Http\Resources\api\v1\post\PostCollection;
-use App\Http\Resources\api\v1\post\PostResource;
 use App\Models\Post;
 use App\Repositories\BaseRepository;
-use App\Repositories\Interfaces\PostRepositoryInterface;
+use App\Http\Resources\api\v1\post\PostResource;
+use App\Http\Resources\api\v1\post\PostCollection;
+use App\Repositories\Interfaces\post\PostRepositoryInterface;
 
 class PostRepository implements PostRepositoryInterface
 {

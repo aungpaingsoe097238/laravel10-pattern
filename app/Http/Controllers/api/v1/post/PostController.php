@@ -16,7 +16,7 @@ class PostController extends Controller
     function __construct(PostRepository $postRepository)
     {
         $this->postRepository = $postRepository;
-        $this->middleware('permission:post_list|post_create|post_edit|post_delete', ['except' => ['index','show']]);
+        // $this->middleware('permission:post_list|post_create|post_edit|post_delete', ['except' => ['index','show']]);
     }
 
     /**

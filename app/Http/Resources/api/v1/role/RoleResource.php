@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\api\v1\role;
 
+use App\Http\Resources\api\v1\permission\PermissionCollection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 

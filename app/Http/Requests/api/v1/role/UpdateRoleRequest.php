@@ -2,7 +2,11 @@
 
 namespace App\Http\Requests\api\v1\role;
 
+use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateRoleRequest extends FormRequest
 {
@@ -21,8 +25,33 @@ class UpdateRoleRequest extends FormRequest
      */
     public function rules(): array
     {
+        $roleId = $this->route('role')->id;
+
         return [
-            'name' => 'required|unique:roles,name,' . $this->route('roles')->id,
+            'name' => [
+                'nullable',
+                Rule::unique('roles')->ignore($roleId),
+            ],
         ];
+    }
+
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param  \Illuminate\Contracts\Validation\Validator  $validator
+     * @throws \Illuminate\Http\Exceptions\HttpResponseException
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = [];
+        foreach ($validator->errors()->getMessages() as $field => $messages) {
+            $errors[$field] = $messages[0];
+        }
+
+        throw new HttpResponseException(response()->json([
+            'message' => 'Failed to update role',
+            'errors' => $errors,
+            'status' => 2
+        ], Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 }

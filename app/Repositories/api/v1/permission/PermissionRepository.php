@@ -2,6 +2,7 @@
 
 namespace App\Repositories\api\v1\permission;
 
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Repositories\BaseRepository;
 use Spatie\Permission\Models\Permission;
@@ -10,9 +11,16 @@ use App\Http\Resources\api\v1\permission\PermissionCollection;
 
 class PermissionRepository
 {
+    protected $with;
+
+    public function __construct()
+    {
+        $this->with = ['roles'];
+    }
+
     public function index()
     {
-        $permissions = Permission::all();
+        $permissions = Permission::with($this->with)->get();
         return new PermissionCollection($permissions);
     }
 
@@ -58,4 +66,5 @@ class PermissionRepository
             ->pluck('role_has_permissions.permission_id', 'role_has_permissions.permission_id')
             ->all();
     }
+
 }

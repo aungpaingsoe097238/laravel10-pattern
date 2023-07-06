@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests\api\v1\role;
 
-use Illuminate\Http\Response;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\Response;
 
-class StoreRoleRequest extends FormRequest
+class AssignRoleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,25 +25,31 @@ class StoreRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|unique:roles,name'
+            'role_id' => 'required|exists:roles,id',
+            'permissions' => 'required|array',
+            'permissions.*' => 'exists:permissions,id',
         ];
     }
 
-    /**
-     * Handle a failed validation attempt.
-     *
-     * @param  \Illuminate\Contracts\Validation\Validator  $validator
-     * @throws \Illuminate\Http\Exceptions\HttpResponseException
-     */
     protected function failedValidation(Validator $validator)
     {
         $errors = [];
         foreach ($validator->errors()->getMessages() as $field => $messages) {
-            $errors[$field] = $messages[0];
+            if (strpos($field, 'permissions.') === 0) {
+                $permissionId = explode('.', $field)[1];
+                $errors['permissions'][] = $permissionId;
+            } else {
+                $errors[$field] = $messages[0];
+            }
+        }
+
+        if (isset($errors['permissions'])) {
+            $invalidPermissionIds = implode(' , ', $errors['permissions']);
+            $errors['permissions'] = count($errors['permissions']) > 1 ? "Permissions index's {$invalidPermissionIds} are invalid." : "{$invalidPermissionIds} is invalid.";
         }
 
         throw new HttpResponseException(response()->json([
-            'message' => 'Failed to created new role.',
+            'message' => 'Permissions assigned to role failed.',
             'errors' => $errors,
             'status' => 2
         ], Response::HTTP_UNPROCESSABLE_ENTITY));

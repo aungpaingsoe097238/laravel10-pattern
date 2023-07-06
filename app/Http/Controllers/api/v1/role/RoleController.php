@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\api\v1\role;
 
+use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\api\v1\permission\UpdatePermissionRequest;
+use App\Http\Requests\api\v1\role\AssignRoleRequest;
+use App\Repositories\api\v1\role\RoleRepository;
 use App\Http\Requests\api\v1\role\StoreRoleRequest;
 use App\Http\Requests\api\v1\role\UpdateRoleRequest;
-use App\Repositories\api\v1\role\RoleRepository;
-use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
@@ -16,7 +15,7 @@ class RoleController extends Controller
 
     public function __construct(RoleRepository $roleRepository)
     {
-        $this->middleware('permission:role_list|role_create|role_edit|role_delete');
+        // $this->middleware('permission:role_list|role_create|role_edit|role_delete');
         $this->roleRepository = $roleRepository;
     }
 
@@ -58,5 +57,11 @@ class RoleController extends Controller
     public function destroy(Role $role)
     {
         return $this->roleRepository->destroy($role);
+    }
+
+    public function assignPermissions(AssignRoleRequest $request)
+    {
+        return $request;
+        return $this->roleRepository->assignPermissions($request->all());
     }
 }

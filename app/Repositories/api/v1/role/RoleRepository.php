@@ -4,6 +4,7 @@ namespace App\Repositories\api\v1\role;
 
 use Spatie\Permission\Models\Role;
 use App\Repositories\BaseRepository;
+use Spatie\Permission\Models\Permission;
 use App\Http\Resources\api\v1\role\RoleResource;
 use App\Http\Resources\api\v1\role\RoleCollection;
 use App\Repositories\Interfaces\role\RoleInterface;
@@ -53,7 +54,6 @@ class RoleRepository implements RoleInterface
         $role->update([
             'name' => $data['name'],
         ]);
-
         return new RoleResource($role);
     }
 
@@ -61,5 +61,13 @@ class RoleRepository implements RoleInterface
     {
         $role->delete();
         return BaseRepository::deleteSuccess('role id ' . $role->id . ' delete successfully');
+    }
+
+    public function assignPermissions(array $data)
+    {
+        $role = Role::find($data['role_id']);
+        $permissions = Permission::whereIn('id', $data['permissions'])->get();
+        $role->syncPermissions($permissions);
+        return BaseRepository::success('Permissions assigned to role successfully.');
     }
 }

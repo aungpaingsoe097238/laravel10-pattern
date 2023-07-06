@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\api\v1\permission;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Spatie\Permission\Models\Permission;
+use App\Repositories\api\v1\permission\PermissionRepository;
 use App\Http\Requests\api\v1\permission\StorePermissionRequest;
 use App\Http\Requests\api\v1\permission\UpdatePermissionRequest;
-use App\Repositories\api\v1\permission\PermissionRepository;
-use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
 {
@@ -46,7 +47,7 @@ class PermissionController extends Controller
      */
     public function update(UpdatePermissionRequest $request, Permission $permission)
     {
-        return $this->permissionRepository->update($request->all(), $permission);
+        return $this->permissionRepository->update($request->validated(), $permission);
     }
 
     /**

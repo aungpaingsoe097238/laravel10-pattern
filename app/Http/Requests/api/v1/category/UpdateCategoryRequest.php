@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\api\v1\category;
 
+use Illuminate\Http\Response;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateCategoryRequest extends FormRequest
 {
@@ -22,7 +25,27 @@ class UpdateCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|unique:categories,name,' . $this->route('category')->id,
+            'name' => 'nullable|unique:categories,name,' . $this->route('category')->id,
         ];
+    }
+
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param  \Illuminate\Contracts\Validation\Validator  $validator
+     * @throws \Illuminate\Http\Exceptions\HttpResponseException
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = [];
+        foreach ($validator->errors()->getMessages() as $field => $messages) {
+            $errors[$field] = $messages[0];
+        }
+
+        throw new HttpResponseException(response()->json([
+            'message' => 'Failed to update category.',
+            'errors' => $errors,
+            'status' => 2
+        ], Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 }

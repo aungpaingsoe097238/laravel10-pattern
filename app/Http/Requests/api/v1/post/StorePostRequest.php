@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\api\v1\post;
 
+use Illuminate\Http\Response;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StorePostRequest extends FormRequest
 {
@@ -25,5 +28,25 @@ class StorePostRequest extends FormRequest
             'title' => 'string|required',
             'category_id' => 'required|exists:categories,id|numeric'
         ];
+    }
+
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param  \Illuminate\Contracts\Validation\Validator  $validator
+     * @throws \Illuminate\Http\Exceptions\HttpResponseException
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = [];
+        foreach ($validator->errors()->getMessages() as $field => $messages) {
+            $errors[$field] = $messages[0];
+        }
+
+        throw new HttpResponseException(response()->json([
+            'message' => 'Failed to create new post.',
+            'errors' => $errors,
+            'status' => 2
+        ], Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 }

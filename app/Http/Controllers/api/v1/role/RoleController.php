@@ -4,10 +4,11 @@ namespace App\Http\Controllers\api\v1\role;
 
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\api\v1\role\AssignRoleRequest;
 use App\Repositories\api\v1\role\RoleRepository;
 use App\Http\Requests\api\v1\role\StoreRoleRequest;
 use App\Http\Requests\api\v1\role\UpdateRoleRequest;
+use App\Http\Resources\api\v1\role\RoleCollection;
+use App\Http\Resources\api\v1\role\RoleResource;
 
 class RoleController extends Controller
 {
@@ -15,7 +16,7 @@ class RoleController extends Controller
 
     public function __construct(RoleRepository $roleRepository)
     {
-        // $this->middleware('permission:role_list|role_create|role_edit|role_delete');
+        $this->middleware('permission:role_list|role_create|role_edit|role_delete');
         $this->roleRepository = $roleRepository;
     }
 
@@ -24,7 +25,8 @@ class RoleController extends Controller
      */
     public function index()
     {
-        return $this->roleRepository->index();
+        $roles = $this->roleRepository->getAll();
+        return new RoleCollection($roles);
     }
 
     /**
@@ -32,7 +34,8 @@ class RoleController extends Controller
      */
     public function store(StoreRoleRequest $request)
     {
-        return $this->roleRepository->store($request->all());
+        $role = $this->roleRepository->createRoleWithPermissions($request->validated());
+        return new RoleResource($role);
     }
 
     /**
@@ -40,7 +43,8 @@ class RoleController extends Controller
      */
     public function show(Role $role)
     {
-        return $this->roleRepository->show($role);
+        $role = $this->roleRepository->get($role);
+        return new RoleResource($role);
     }
 
     /**
@@ -48,7 +52,8 @@ class RoleController extends Controller
      */
     public function update(UpdateRoleRequest $request, Role $role)
     {
-        return $this->roleRepository->update($request->all(), $role);
+        $role = $this->roleRepository->updateRoleWithPermissions($role, $request->validated());
+        return new RoleResource($role);
     }
 
     /**
@@ -56,12 +61,6 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
-        return $this->roleRepository->destroy($role);
-    }
-
-    public function assignPermissions(AssignRoleRequest $request)
-    {
-        return $request;
-        return $this->roleRepository->assignPermissions($request->all());
+        return $this->roleRepository->delete($role);
     }
 }

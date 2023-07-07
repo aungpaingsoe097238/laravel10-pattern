@@ -25,7 +25,9 @@ class StoreRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|unique:roles,name'
+            'name' => 'required|unique:roles,name',
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'integer|exists:permissions,id',
         ];
     }
 
@@ -39,11 +41,21 @@ class StoreRoleRequest extends FormRequest
     {
         $errors = [];
         foreach ($validator->errors()->getMessages() as $field => $messages) {
-            $errors[$field] = $messages[0];
+            if (strpos($field, 'permissions.') === 0) {
+                $permissionId = explode('.', $field)[1];
+                $errors['permissions'][] = $permissionId;
+            } else {
+                $errors[$field] = $messages[0];
+            }
+        }
+
+        if (isset($errors['permissions'])) {
+            $invalidPermissionIds = implode(' , ', $errors['permissions']);
+            $errors['permissions'] = count($errors['permissions']) > 1 ? "Permissions index's {$invalidPermissionIds} are invalid." : "{$invalidPermissionIds} is invalid.";
         }
 
         throw new HttpResponseException(response()->json([
-            'message' => 'Failed to created new role.',
+            'message' => 'Failed to create new role.',
             'errors' => $errors,
             'status' => 2
         ], Response::HTTP_UNPROCESSABLE_ENTITY));

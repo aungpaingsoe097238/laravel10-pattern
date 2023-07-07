@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\api\v1\permission;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Permission;
 use App\Repositories\api\v1\permission\PermissionRepository;
 use App\Http\Requests\api\v1\permission\StorePermissionRequest;
 use App\Http\Requests\api\v1\permission\UpdatePermissionRequest;
+use App\Http\Resources\api\v1\permission\PermissionCollection;
+use App\Http\Resources\api\v1\permission\PermissionResource;
 
 class PermissionController extends Controller
 {
@@ -23,7 +24,8 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        return $this->permissionRepository->index();
+        $permissions = $this->permissionRepository->getAll();
+        return new PermissionCollection($permissions);
     }
 
     /**
@@ -31,7 +33,8 @@ class PermissionController extends Controller
      */
     public function store(StorePermissionRequest $request)
     {
-        return $this->permissionRepository->store($request->all());
+        $permission = $this->permissionRepository->create($request->validated());
+        return new PermissionResource($permission);
     }
 
     /**
@@ -39,7 +42,8 @@ class PermissionController extends Controller
      */
     public function show(Permission $permission)
     {
-        return $this->permissionRepository->show($permission);
+        $permission = $this->permissionRepository->get($permission);
+        return new PermissionResource($permission);
     }
 
     /**
@@ -47,7 +51,8 @@ class PermissionController extends Controller
      */
     public function update(UpdatePermissionRequest $request, Permission $permission)
     {
-        return $this->permissionRepository->update($request->validated(), $permission);
+        $permission = $this->permissionRepository->update($permission, $request->validated());
+        return new PermissionResource($permission);
     }
 
     /**
@@ -55,17 +60,6 @@ class PermissionController extends Controller
      */
     public function destroy(Permission $permission)
     {
-        return $this->permissionRepository->destroy($permission);
-    }
-
-
-    public function getRolePermission($id)
-    {
-        return $this->permissionRepository->getRolePermission($id);
-    }
-
-    public function getRolePermissions($id)
-    {
-        return $this->permissionRepository->getRolePermissions($id);
+        return $this->permissionRepository->delete($permission);
     }
 }

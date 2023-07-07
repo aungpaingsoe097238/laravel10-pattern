@@ -4,70 +4,32 @@ namespace App\Repositories\api\v1\role;
 
 use Spatie\Permission\Models\Role;
 use App\Repositories\BaseRepository;
-use Spatie\Permission\Models\Permission;
-use App\Http\Resources\api\v1\role\RoleResource;
-use App\Http\Resources\api\v1\role\RoleCollection;
-use App\Repositories\Interfaces\role\RoleInterface;
 
-class RoleRepository implements RoleInterface
+class RoleRepository extends BaseRepository
 {
-
-    protected $with;
-
-    public function __construct()
+    public function __construct(Role $role)
     {
-        $this->with = ['permissions'];
+        parent::__construct($role);
     }
 
-    public function index()
-    {
-        $roles = Role::with($this->with)
-            ->orderBy('id', 'asc');
-        if (request()->has('paginate')) {
-            $roles = $roles->paginate(request()->get('paginate'));
-        } else {
-            $roles = $roles->get();
-        }
-        return new RoleCollection($roles);
-    }
-
-    public function show(Role $role)
-    {
-        return new RoleResource($role);
-    }
-
-    public function store(array $data)
+    public function createRoleWithPermissions(array $data)
     {
         $role = Role::create([
-            'name'   => $data['name']
+            'name' => $data['name'],
         ]);
-        if (isset($data['permission']) && $data['permission']) {
-            $role->syncPermissions($data['permission']);
-        }
-        return new RoleResource($role);
+
+        $role->syncPermissions($data['permissions'] ?? []);
+
+        return $role;
     }
 
-    public function update(array $data, Role $role)
+    public function updateRoleWithPermissions(Role $role, array $data)
     {
-        $data['name'] = isset($data['name']) ? $data['name'] : $role->name;
-
+        $data['name'] = $data['name'] ?? $role->name;
         $role->update([
             'name' => $data['name'],
         ]);
-        return new RoleResource($role);
-    }
-
-    public function destroy(Role $role)
-    {
-        $role->delete();
-        return BaseRepository::deleteSuccess('role id ' . $role->id . ' delete successfully');
-    }
-
-    public function assignPermissions(array $data)
-    {
-        $role = Role::find($data['role_id']);
-        $permissions = Permission::whereIn('id', $data['permissions'])->get();
-        $role->syncPermissions($permissions);
-        return BaseRepository::success('Permissions assigned to role successfully.');
+        $role->syncPermissions($data['permissions']);
+        return $role;
     }
 }

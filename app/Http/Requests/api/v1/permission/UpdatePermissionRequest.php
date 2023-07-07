@@ -25,13 +25,8 @@ class UpdatePermissionRequest extends FormRequest
      */
     public function rules(): array
     {
-        $permissionsId = $this->route('permissions')->id;
-
         return [
-            'name' => [
-                'nullable',
-                Rule::unique('permissions')->ignore($permissionsId),
-            ],
+            'name'  => 'required|string|unique:permissions,name,' . $this->route('permission')->id,
         ];
     }
 
@@ -41,17 +36,16 @@ class UpdatePermissionRequest extends FormRequest
      * @param  \Illuminate\Contracts\Validation\Validator  $validator
      * @throws \Illuminate\Http\Exceptions\HttpResponseException
      */
-    // protected function failedValidation(Validator $validator)
-    // {
-    //     $errors = [];
-    //     foreach ($validator->errors()->getMessages() as $field => $messages) {
-    //         $errors[$field] = $messages[0];
-    //     }
-
-    //     throw new HttpResponseException(response()->json([
-    //         'message' => 'Failed to update permission.',
-    //         'errors' => $errors,
-    //         'status' => 2
-    //     ], Response::HTTP_UNPROCESSABLE_ENTITY));
-    // }
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = [];
+        foreach ($validator->errors()->getMessages() as $field => $messages) {
+            $errors[$field] = $messages[0];
+        }
+        throw new HttpResponseException(response()->json([
+            'message' => 'Failed to update permission.',
+            'errors' => $errors,
+            'status' => 2
+        ], Response::HTTP_UNPROCESSABLE_ENTITY));
+    }
 }

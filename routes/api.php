@@ -11,10 +11,7 @@ Route::prefix('v1')->middleware('auth:api')->group(function () {
     Route::resource('posts', PostController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('roles', RoleController::class);
-    Route::post('assignPermissions', [RoleController::class, "assignPermissions"]); // Assign Permission to roles
     Route::resource('permissions', PermissionController::class);
-    Route::get('getRolePermission/{id}', [PermissionController::class, "getRolePermission"]); // GET role permissions with object
-    Route::get('getRolePermissions/{id}', [PermissionController::class, "getRolePermissions"]); // GET role permissions with array
 });
 
 Route::post('register', [AuthController::class, 'register']);

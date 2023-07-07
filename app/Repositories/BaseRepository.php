@@ -2,48 +2,61 @@
 
 namespace App\Repositories;
 
-use Illuminate\Http\Response;
+use Illuminate\Database\Eloquent\Model;
 
-class BaseRepository
+abstract class BaseRepository
 {
-    public static function json($data = [], $message = 'Successfully', $status = 1, $code = Response::HTTP_OK)
+    protected $model;
+    protected $with = [];
+
+    public function __construct(Model $model)
     {
-        return response()->json([
-            'data' => $data,
-            'message' => $message,
-            'status'  => $status,
-        ], $code);
+        $this->model = $model;
     }
 
-    public static function notFound($message = "Data not found", $status = 2, $code = Response::HTTP_NOT_FOUND)
+    public function with($relations)
     {
-        return response()->json([
-            'message' => $message,
-            'status'  => $status,
-        ], $code);
+        $this->with = $relations;
+        return $this;
     }
 
-    public static function error($message = 'Failed', $status = 2, $code = Response::HTTP_BAD_REQUEST)
+    public function getAll()
     {
-        return response()->json([
-            'message' => $message,
-            'status'  => $status
-        ], $code);
+        $query = $this->model->with($this->with);
+
+        if ($this->model->hasNamedScope('filter')) {
+            $query->filter();
+        }
+
+        $results = $query->when(request()->has('paginate'), function ($query) {
+            return $query->paginate(request()->get('paginate'));
+        }, function ($query) {
+            return $query->get();
+        });
+
+        return $results;
     }
 
-    public static function success($message = 'Successfully', $status = 1, $code = Response::HTTP_OK)
+    public function get(Model $model)
     {
-        return response()->json([
-            'message' => $message,
-            'status'  => $status
-        ], $code);
+        return $model;
     }
 
-    public static function deleteSuccess($message = 'Data delete successfully', $status = 1, $code = Response::HTTP_OK)
+    public function create(array $data)
     {
-        return response()->json([
-            'message' => $message,
-            'status'  => $status,
-        ], $code);
+        $model = $this->model->create($data);
+        $model->load($this->with);
+        return $model;
+    }
+
+    public function update(Model $model, array $data)
+    {
+        $model->update($data);
+        return $model;
+    }
+
+    public function delete(Model $model)
+    {
+        $model->delete();
     }
 }

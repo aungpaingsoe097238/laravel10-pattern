@@ -25,13 +25,10 @@ class UpdateRoleRequest extends FormRequest
      */
     public function rules(): array
     {
-        $roleId = $this->route('role')->id;
-
         return [
-            'name' => [
-                'nullable',
-                Rule::unique('roles')->ignore($roleId),
-            ],
+            'name' => 'nullable|string|unique:roles,name,' . $this->route('role')->id,
+            'permissions' => 'required|array',
+            'permissions.*' => 'integer|exists:permissions,id',
         ];
     }
 
@@ -45,11 +42,21 @@ class UpdateRoleRequest extends FormRequest
     {
         $errors = [];
         foreach ($validator->errors()->getMessages() as $field => $messages) {
-            $errors[$field] = $messages[0];
+            if (strpos($field, 'permissions.') === 0) {
+                $permissionId = explode('.', $field)[1];
+                $errors['permissions'][] = $permissionId;
+            } else {
+                $errors[$field] = $messages[0];
+            }
+        }
+
+        if (isset($errors['permissions'])) {
+            $invalidPermissionIds = implode(' , ', $errors['permissions']);
+            $errors['permissions'] = count($errors['permissions']) > 1 ? "Permissions index's {$invalidPermissionIds} are invalid." : "{$invalidPermissionIds} is invalid.";
         }
 
         throw new HttpResponseException(response()->json([
-            'message' => 'Failed to update role',
+            'message' => 'Failed to update new role.',
             'errors' => $errors,
             'status' => 2
         ], Response::HTTP_UNPROCESSABLE_ENTITY));

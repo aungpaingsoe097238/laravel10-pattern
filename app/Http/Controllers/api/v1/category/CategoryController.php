@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\api\v1\category;
 
 use App\Models\Category;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\api\v1\category\StoreCategoryRequest;
 use App\Http\Requests\api\v1\category\UpdateCategoryRequest;
+use App\Http\Resources\api\v1\category\CategoryCollection;
+use App\Http\Resources\api\v1\category\CategoryResource;
 use App\Repositories\api\v1\category\CategoryRepository;
 
 class CategoryController extends Controller
@@ -25,7 +26,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return $this->categoryRepository->index();
+        $categories = $this->categoryRepository->getAll();
+        return new CategoryCollection($categories);
     }
 
     /**
@@ -33,7 +35,8 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        return $this->categoryRepository->store($request->all());
+        $category = $this->categoryRepository->create($request->validated());
+        return new CategoryResource($category);
     }
 
     /**
@@ -41,7 +44,8 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        return $this->categoryRepository->show($category);
+        $category = $this->categoryRepository->get($category);
+        return new CategoryResource($category);
     }
 
     /**
@@ -49,7 +53,8 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        return $this->categoryRepository->update($request->all(), $category);
+        $category = $this->categoryRepository->update($category, $request->validated());
+        return new CategoryResource($category);
     }
 
     /**
@@ -57,6 +62,6 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        return $this->categoryRepository->destroy($category);
+        return $this->categoryRepository->delete($category);
     }
 }

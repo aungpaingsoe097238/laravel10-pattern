@@ -26,7 +26,7 @@ class UpdatePostRequest extends FormRequest
     {
         return [
             'title' => 'nullable|string',
-            'category_id' => 'nullable|exists:category,id|numeric'
+            'category_id' => 'nullable|exists:categories,id|numeric'
         ];
     }
 

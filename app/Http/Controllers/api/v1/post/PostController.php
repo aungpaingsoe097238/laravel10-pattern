@@ -6,6 +6,8 @@ use App\Models\Post;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\api\v1\post\StorePostRequest;
 use App\Http\Requests\api\v1\post\UpdatePostRequest;
+use App\Http\Resources\api\v1\post\PostCollection;
+use App\Http\Resources\api\v1\post\PostResource;
 use App\Repositories\api\v1\post\PostRepository;
 
 class PostController extends Controller
@@ -16,7 +18,7 @@ class PostController extends Controller
     function __construct(PostRepository $postRepository)
     {
         $this->postRepository = $postRepository;
-        // $this->middleware('permission:post_list|post_create|post_edit|post_delete', ['except' => ['index','show']]);
+        $this->middleware('permission:post_list|post_create|post_edit|post_delete', ['except' => ['index', 'show']]);
     }
 
     /**
@@ -24,7 +26,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        return $this->postRepository->index();
+        $posts = $this->postRepository->getAll();
+        return new PostCollection($posts);
     }
 
     /**
@@ -32,7 +35,8 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        return $this->postRepository->store($request->validated());
+        $post = $this->postRepository->create($request->validated());
+        return new PostResource($post);
     }
 
     /**
@@ -40,7 +44,8 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return $this->postRepository->show($post);
+        $post = $this->postRepository->get($post);
+        return new PostResource($post);
     }
 
     /**
@@ -48,7 +53,8 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        return $this->postRepository->update($request->validated(), $post);
+        $post = $this->postRepository->update($post, $request->validated());
+        return new PostResource($post);
     }
 
     /**
@@ -56,6 +62,6 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        return $this->postRepository->destroy($post);
+        return $this->postRepository->delete($post);
     }
 }

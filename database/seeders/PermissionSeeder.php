@@ -14,22 +14,22 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            'permission_list',
-            'permission_create',
-            'permission_delete',
-            'permission_edit',
-            'role_list',
-            'role_create',
-            'role_delete',
-            'role_edit',
-            'post_list',
-            'post_create',
-            'post_edit',
-            'post_delete',
-            'category_list',
-            'category_create',
-            'category_edit',
-            'category_delete'
+            'permission-list',
+            'permission-create',
+            'permission-delete',
+            'permission-edit',
+            'role-list',
+            'role-create',
+            'role-delete',
+            'role-edit',
+            'post-list',
+            'post-create',
+            'post-edit',
+            'post-delete',
+            'category-list',
+            'category-create',
+            'category-edit',
+            'category-delete'
         ];
 
         foreach ($permissions as $permission) {

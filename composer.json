@@ -6,6 +6,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "flipbox/lumen-generator": "^9.2",
+        "flugger/laravel-responder": "^3.3",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.10",
         "laravel/passport": "^11.8",

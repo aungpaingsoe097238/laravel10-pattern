@@ -25,7 +25,7 @@ class PostCollection extends ResourceCollection
     public function with($request)
     {
         return [
-            'message' => 'successfully',
+            'message' => 'Post list successfully',
             'status' => true,
         ];
     }

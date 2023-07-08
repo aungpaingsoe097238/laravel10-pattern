@@ -17,7 +17,7 @@ class CategoryCollection extends ResourceCollection
         return parent::toArray($request);
     }
 
-        /**
+    /**
      * Get additional data that should be returned with the resource array.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -26,7 +26,7 @@ class CategoryCollection extends ResourceCollection
     public function with($request)
     {
         return [
-            'message' => 'successfully',
+            'message' => 'Category list successfully',
             'status' => true
         ];
     }

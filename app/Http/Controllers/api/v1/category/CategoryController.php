@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\api\v1\category;
 
 use App\Models\Category;
+use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\api\v1\category\StoreCategoryRequest;
-use App\Http\Requests\api\v1\category\UpdateCategoryRequest;
-use App\Http\Resources\api\v1\category\CategoryCollection;
 use App\Http\Resources\api\v1\category\CategoryResource;
 use App\Repositories\api\v1\category\CategoryRepository;
+use App\Http\Resources\api\v1\category\CategoryCollection;
+use App\Http\Requests\api\v1\category\StoreCategoryRequest;
+use App\Http\Requests\api\v1\category\UpdateCategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -18,7 +19,7 @@ class CategoryController extends Controller
     public function __construct(CategoryRepository $categoryRepository)
     {
         $this->categoryRepository = $categoryRepository;
-        $this->middleware('permission:category_list|category_create|category_edit|category_delete', ['except' => ['index', 'show']]);
+        $this->middleware('permission:category-list|category-create|category-edit|category-delete', ['except' => ['index', 'show']]);
     }
 
     /**
@@ -62,6 +63,7 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        return $this->categoryRepository->delete($category);
+        $category = $this->categoryRepository->delete($category);
+        return new CategoryResource($category);
     }
 }

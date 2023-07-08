@@ -12,13 +12,12 @@ use App\Repositories\api\v1\post\PostRepository;
 
 class PostController extends Controller
 {
-
     protected $postRepository;
 
     function __construct(PostRepository $postRepository)
     {
         $this->postRepository = $postRepository;
-        $this->middleware('permission:post_list|post_create|post_edit|post_delete', ['except' => ['index', 'show']]);
+        $this->middleware('permission:post-list|post-create|post-edit|post-delete', ['except' => ['index', 'show']]);
     }
 
     /**
@@ -62,6 +61,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        return $this->postRepository->delete($post);
+        $post = $this->postRepository->delete($post);
+        return new PostResource($post);
     }
 }

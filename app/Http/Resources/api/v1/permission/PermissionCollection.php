@@ -26,7 +26,7 @@ class PermissionCollection extends ResourceCollection
     public function with($request)
     {
         return [
-            'message' => 'successfully',
+            'message' => 'Permission list successfully.',
             'status' => true,
         ];
     }

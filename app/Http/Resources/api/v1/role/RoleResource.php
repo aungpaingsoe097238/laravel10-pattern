@@ -2,9 +2,10 @@
 
 namespace App\Http\Resources\api\v1\role;
 
-use App\Http\Resources\api\v1\permission\PermissionCollection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\api\v1\permission\PermissionCollection;
 
 class RoleResource extends JsonResource
 {
@@ -15,11 +16,15 @@ class RoleResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $routeName = Route::currentRouteName();
+        if ($routeName === 'roles.destroy') {
+            return parent::toArray($request);
+        }
+
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'permissions' => new PermissionCollection($this->permissions),
-            'created_at' => $this->created_at->format('Y-m-d')
+            'permissions' => new PermissionCollection($this->permissions)
         ];
     }
 
@@ -31,9 +36,16 @@ class RoleResource extends JsonResource
      */
     public function with($request)
     {
+        $routeName = Route::currentRouteName();
         return [
-            'message' => 'successfully',
-            'status' => true,
+            'message' => match ($routeName) {
+                'roles.store' => 'Role create successfully',
+                'roles.show' => 'Role details retrieved successfully',
+                'roles.update' => 'Role updated successfully',
+                'roles.destroy' => 'Role deleted successfully',
+                default => 'Unknown route',
+            },
+            'status' => in_array($routeName, ['roles.store', 'roles.show', 'roles.update', 'roles.destroy']),
         ];
     }
 }

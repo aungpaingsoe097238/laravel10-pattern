@@ -16,7 +16,7 @@ class RoleController extends Controller
 
     public function __construct(RoleRepository $roleRepository)
     {
-        $this->middleware('permission:role_list|role_create|role_edit|role_delete');
+        $this->middleware('permission:role-list|role-create|role-edit|role-delete');
         $this->roleRepository = $roleRepository;
     }
 
@@ -61,6 +61,7 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
-        return $this->roleRepository->delete($role);
+        $role = $this->roleRepository->delete($role);
+        return new RoleResource($role);
     }
 }

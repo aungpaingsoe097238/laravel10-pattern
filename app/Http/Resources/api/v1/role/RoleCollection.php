@@ -26,7 +26,7 @@ class RoleCollection extends ResourceCollection
     public function with($request)
     {
         return [
-            'message' => 'successfully',
+            'message' => 'Role list successfully',
             'status' => true,
         ];
     }

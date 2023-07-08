@@ -16,7 +16,7 @@ class PermissionController extends Controller
 
     public function __construct(PermissionRepository $permissionRepository)
     {
-        $this->middleware('permission:permission_list|permission_create|permission_edit|permission_delete');
+        $this->middleware('permission:permission-list|permission-create|permission-edit|permission-delete');
         $this->permissionRepository = $permissionRepository;
     }
     /**
@@ -58,8 +58,8 @@ class PermissionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Permission $permission)
-    {
-        return $this->permissionRepository->delete($permission);
-    }
+    // public function destroy(Permission $permission)
+    // {
+    //     return $this->permissionRepository->delete($permission);
+    // }
 }

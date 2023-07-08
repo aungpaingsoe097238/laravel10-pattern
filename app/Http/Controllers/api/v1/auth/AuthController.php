@@ -32,7 +32,7 @@ class AuthController extends Controller
 
         return response()->json([
             'data' => $user,
-            'message' => 'successfully',
+            'message' => 'Registation successfully.',
             'status' => false
         ], 200);
     }
@@ -46,7 +46,7 @@ class AuthController extends Controller
             $user['token'] = $user->createToken('laravel10')->accessToken;
             return new AuthResource($user);
         } else {
-            return response()->json(['message' => 'unauthorized', 'status' => false], 401);
+            return response()->json(['message' => 'Unauthorized', 'status' => false], 401);
         }
     }
 
@@ -56,7 +56,7 @@ class AuthController extends Controller
         $user->revoke();
         return response()->json([
             'status' => true,
-            'message' => 'logout successfully'
+            'message' => 'Logout successfully'
         ], 200);
     }
 
@@ -76,6 +76,6 @@ class AuthController extends Controller
         $user->password = Hash::make($request->new_password);
         $user->save();
 
-        return response()->json(['message' => 'password changed successfully', 'status' => true], 200);
+        return response()->json(['message' => 'Password changed successfully', 'status' => true], 200);
     }
 }

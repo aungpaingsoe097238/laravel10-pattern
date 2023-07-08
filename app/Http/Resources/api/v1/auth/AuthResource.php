@@ -33,7 +33,7 @@ class AuthResource extends JsonResource
     {
         return [
             'message' => 'successfully',
-            'status' => true
+            'status' => 1
         ];
     }
 }

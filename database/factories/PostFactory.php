@@ -20,8 +20,9 @@ class PostFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->text(),
+            'title' => fake()->word(),
             'category_id' => Category::inRandomOrder()->first()->id,
+            'description' => fake()->realText(),
             'created_at' => Carbon::now()->subDays(rand(1, 30)),
             'updated_at' => Carbon::now()->subDays(rand(1, 30)),
         ];

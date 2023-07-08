@@ -3,6 +3,7 @@
 namespace App\Http\Resources\api\v1\permission;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PermissionResource extends JsonResource
@@ -14,10 +15,14 @@ class PermissionResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $routeName = Route::currentRouteName();
+        if ($routeName === 'permissions.destroy') {
+            return parent::toArray($request);
+        }
+
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'created_at' => $this->created_at->format('Y-m-d')
+            'name' => $this->name
         ];
     }
 
@@ -29,9 +34,16 @@ class PermissionResource extends JsonResource
      */
     public function with($request)
     {
+        $routeName = Route::currentRouteName();
         return [
-            'message' => 'successfully',
-            'status' => true,
+            'message' => match ($routeName) {
+                'permissions.store' => 'Permission create successfully',
+                'permissions.show' => 'Permission details retrieved successfully',
+                'permissions.update' => 'Permission updated successfully',
+                'permissions.destroy' => 'Permission deleted successfully',
+                default => 'Unknown route',
+            },
+            'status' => in_array($routeName, ['permissions.store', 'permissions.show', 'permissions.update', 'permissions.destroy']),
         ];
     }
 }

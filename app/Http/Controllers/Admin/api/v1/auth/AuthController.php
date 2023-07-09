@@ -5,77 +5,52 @@ namespace App\Http\Controllers\Admin\api\v1\auth;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\api\v1\auth\ChangePasswordAuthenticationRequest;
+use App\Http\Requests\Admin\api\v1\auth\LoginAuthenticationRequest;
+use App\Http\Requests\Admin\api\v1\auth\RegisterAuthenticationRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\Admin\api\v1\auth\AuthResource;
+use Illuminate\Http\Response;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    public function register(RegisterAuthenticationRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8|confirmed'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors(), 'status' => false], 400);
-        }
-
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-
-        return response()->json([
-            'data' => $user,
-            'message' => 'Registation successfully.',
-            'status' => false
-        ], 200);
+        return new AuthResource($user);
     }
 
-    public function login(Request $request)
+    public function login(LoginAuthenticationRequest $request)
     {
-        $credentials = $request->only('email', 'password');
-
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($request->validated())) {
             $user = Auth::user();
             $user['token'] = $user->createToken('laravel10')->accessToken;
             return new AuthResource($user);
-        } else {
-            return response()->json(['message' => 'Unauthorized', 'status' => false], 401);
         }
+
+        return response()->json(['message' => 'Unauthorized.', 'status' => false], Response::HTTP_UNAUTHORIZED);
     }
 
     public function logout()
     {
         $user = Auth::user()->token();
         $user->revoke();
-        return response()->json([
-            'status' => true,
-            'message' => 'Logout successfully'
-        ], 200);
+        return new AuthResource($user);
     }
 
-    public function changePassword(Request $request)
+    public function changePassword(ChangePasswordAuthenticationRequest $request)
     {
-        $request->validate([
-            'current_password' => 'required',
-            'new_password' => 'required|string|min:8|confirmed',
-        ]);
-
         $user = Auth::user();
-
         if (!Hash::check($request->current_password, $user->password)) {
-            return response()->json(['error' => 'The current password is incorrect.'], 401);
+            return response()->json(['message' => 'The current password is incorrect.', 'status' => false], Response::HTTP_BAD_REQUEST);
         }
-
         $user->password = Hash::make($request->new_password);
         $user->save();
-
-        return response()->json(['message' => 'Password changed successfully', 'status' => true], 200);
+        return new AuthResource($user);
     }
 }

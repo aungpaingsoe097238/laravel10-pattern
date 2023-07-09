@@ -44,7 +44,7 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         $category = $this->categoryRepository->get($category);
-        return new CategoryResource($category);
+        return new CategoryResource($category->load('posts'));
     }
 
     /**

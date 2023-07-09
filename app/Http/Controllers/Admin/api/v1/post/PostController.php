@@ -13,10 +13,12 @@ use App\Http\Requests\Admin\api\v1\post\UpdatePostRequest;
 class PostController extends Controller
 {
     protected $postRepository;
+    protected $with = [];
 
     function __construct(PostRepository $postRepository)
     {
         $this->postRepository = $postRepository;
+        $this->with = ['category'];
         $this->middleware('permission:post-list|post-create|post-edit|post-delete', ['except' => ['index', 'show']]);
     }
 
@@ -35,7 +37,7 @@ class PostController extends Controller
     public function store(StorePostRequest $request)
     {
         $post = $this->postRepository->create($request->validated());
-        return new PostResource($post);
+        return new PostResource($post->load($this->with));
     }
 
     /**
@@ -44,7 +46,7 @@ class PostController extends Controller
     public function show(Post $post)
     {
         $post = $this->postRepository->get($post);
-        return new PostResource($post);
+        return new PostResource($post->load($this->with));
     }
 
     /**
@@ -53,7 +55,7 @@ class PostController extends Controller
     public function update(UpdatePostRequest $request, Post $post)
     {
         $post = $this->postRepository->update($post, $request->validated());
-        return new PostResource($post);
+        return new PostResource($post->load($this->with));
     }
 
     /**

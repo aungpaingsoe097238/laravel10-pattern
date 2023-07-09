@@ -7,22 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 abstract class BaseRepository
 {
     protected $model;
-    protected $with = [];
-
     public function __construct(Model $model)
     {
         $this->model = $model;
     }
-
-    public function with($relations)
-    {
-        $this->with = $relations;
-        return $this;
-    }
-
     public function getAll()
     {
-        $query = $this->model->with($this->with);
+        $query = $this->model;
 
         if ($this->model->hasNamedScope('filter')) {
             $query->filter();
@@ -45,7 +36,6 @@ abstract class BaseRepository
     public function create(array $data)
     {
         $model = $this->model->create($data);
-        $model->load($this->with);
         return $model;
     }
 

@@ -24,7 +24,7 @@ class PostResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'category' => new CategoryResource($this->category),
+            'category' => new CategoryResource($this->whenLoaded('category')),
             'category_id' => $this->category->id,
             'description' => $this->when(!$request->routeIs('posts.index'), fn () => $this->description), // show only in posts.index
             'created_at' => $this->created_at->format('Y-m-d')

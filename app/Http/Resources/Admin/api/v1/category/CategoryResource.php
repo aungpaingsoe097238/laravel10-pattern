@@ -2,9 +2,12 @@
 
 namespace App\Http\Resources\Admin\api\v1\category;
 
+use App\Http\Resources\Admin\api\v1\post\PostCollection;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CategoryResource extends JsonResource
 {
@@ -22,10 +25,10 @@ class CategoryResource extends JsonResource
 
         return [
             'id' => $this->id,
-            'name' => $this->name
+            'name' => $this->name,
+            'posts' => new PostCollection($this->whenLoaded('posts'))
         ];
     }
-
     /**
      * Get additional data that should be returned with the resource array.
      *

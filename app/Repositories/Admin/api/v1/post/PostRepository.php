@@ -10,6 +10,5 @@ class PostRepository extends BaseRepository
     public function __construct(Post $post)
     {
         parent::__construct($post);
-        $this->with = ['category']; // Set the desired relationships here
     }
 }

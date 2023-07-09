@@ -5,7 +5,7 @@ namespace App\Http\Resources\Admin\api\v1\role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\api\v1\permission\PermissionCollection;
+use App\Http\Resources\Admin\api\v1\permission\PermissionCollection;
 
 class RoleResource extends JsonResource
 {
@@ -24,7 +24,7 @@ class RoleResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'permissions' => new PermissionCollection($this->permissions)
+            'permissions' => new PermissionCollection($this->whenLoaded('permissions'))
         ];
     }
 

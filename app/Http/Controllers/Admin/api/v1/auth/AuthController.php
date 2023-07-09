@@ -30,7 +30,7 @@ class AuthController extends Controller
         if (Auth::attempt($request->validated())) {
             $user = Auth::user();
             $user['token'] = $user->createToken('laravel10')->accessToken;
-            return new AuthResource($user);
+            return new AuthResource($user->load('roles'));
         }
 
         return response()->json(['message' => 'Unauthorized.', 'status' => false], Response::HTTP_UNAUTHORIZED);

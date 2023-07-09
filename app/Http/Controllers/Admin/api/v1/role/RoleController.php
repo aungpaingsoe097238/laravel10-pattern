@@ -44,7 +44,7 @@ class RoleController extends Controller
     public function show(Role $role)
     {
         $role = $this->roleRepository->get($role);
-        return new RoleResource($role);
+        return new RoleResource($role->load('permissions'));
     }
 
     /**

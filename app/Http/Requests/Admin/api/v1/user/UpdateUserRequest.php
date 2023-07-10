@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Admin\api\v1\auth;
+namespace App\Http\Requests\Admin\api\v1\user;
 
 use Illuminate\Http\Response;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class LoginAuthenticationRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,9 @@ class LoginAuthenticationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'password' => 'required'
+            'name' => 'nullable|unique:users,name,' . $this->route('user')->id,
+            'email' => 'nullable|unique:users,email,' . $this->route('user')->id,
+            'password' => 'required|confirmed'
         ];
     }
 
@@ -34,7 +35,6 @@ class LoginAuthenticationRequest extends FormRequest
      * Handle a failed validation attempt.
      *
      * @param  \Illuminate\Contracts\Validation\Validator  $validator
-     * @param  \Illuminate\Http\Response;
      * @throws \Illuminate\Http\Exceptions\HttpResponseException
      */
     protected function failedValidation(Validator $validator)
@@ -45,9 +45,9 @@ class LoginAuthenticationRequest extends FormRequest
         }
 
         throw new HttpResponseException(response()->json([
-            'message' => 'Unauthorized.',
+            'message' => 'Failed to update user.',
             'errors' => $errors,
             'status' => false
-        ], Response::HTTP_UNAUTHORIZED));
+        ], Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 }

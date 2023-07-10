@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Admin\api\v1\auth;
+namespace App\Http\Requests\Admin\api\v1\user;
 
 use Illuminate\Http\Response;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class LoginAuthenticationRequest extends FormRequest
+class StoreUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,11 @@ class LoginAuthenticationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'password' => 'required'
+            'name' => 'required|unique:users,name',
+            'email' => 'required|unique:users,email',
+            'password' => 'required|confirmed',
+            'roles' => 'nullable|array',
+            'roles.*' => 'integer|exists:roles,id',
         ];
     }
 
@@ -34,20 +37,29 @@ class LoginAuthenticationRequest extends FormRequest
      * Handle a failed validation attempt.
      *
      * @param  \Illuminate\Contracts\Validation\Validator  $validator
-     * @param  \Illuminate\Http\Response;
      * @throws \Illuminate\Http\Exceptions\HttpResponseException
      */
     protected function failedValidation(Validator $validator)
     {
         $errors = [];
         foreach ($validator->errors()->getMessages() as $field => $messages) {
-            $errors[$field] = $messages[0];
+            if (strpos($field, 'roles.') === 0) {
+                $permissionId = explode('.', $field)[1];
+                $errors['roles'][] = $permissionId;
+            } else {
+                $errors[$field] = $messages[0];
+            }
+        }
+
+        if (isset($errors['roles'])) {
+            $invalidRoleIds = implode(' , ', $errors['roles']);
+            $errors['roles'] = count($errors['roles']) > 1 ? "Roles index's {$invalidRoleIds} are invalid." : "Roles index's {$invalidRoleIds} is invalid.";
         }
 
         throw new HttpResponseException(response()->json([
-            'message' => 'Unauthorized.',
+            'message' => 'Failed to create new user.',
             'errors' => $errors,
             'status' => false
-        ], Response::HTTP_UNAUTHORIZED));
+        ], Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 }

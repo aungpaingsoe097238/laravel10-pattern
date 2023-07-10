@@ -51,7 +51,7 @@ class StoreRoleRequest extends FormRequest
 
         if (isset($errors['permissions'])) {
             $invalidPermissionIds = implode(' , ', $errors['permissions']);
-            $errors['permissions'] = count($errors['permissions']) > 1 ? "Permissions index's {$invalidPermissionIds} are invalid." : "{$invalidPermissionIds} is invalid.";
+            $errors['permissions'] = count($errors['permissions']) > 1 ? "Permissions index's {$invalidPermissionIds} are invalid." : "Permissions index's {$invalidPermissionIds} is invalid.";
         }
 
         throw new HttpResponseException(response()->json([

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin\api\v1\auth;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\api\v1\auth\ChangePasswordAuthenticationRequest;
 use App\Http\Requests\Admin\api\v1\auth\LoginAuthenticationRequest;

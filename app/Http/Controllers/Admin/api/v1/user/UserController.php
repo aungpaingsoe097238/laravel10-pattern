@@ -3,19 +3,23 @@
 namespace App\Http\Controllers\Admin\api\v1\user;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\api\v1\user\StoreUserRequest;
+use App\Http\Requests\Admin\api\v1\user\UpdateUserRequest;
+use App\Http\Resources\Admin\api\v1\user\UserCollection;
+use App\Http\Resources\Admin\api\v1\user\UserResource;
 use App\Repositories\Admin\api\v1\user\UserRepository;
-use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
     protected $userRepository;
+    protected $with = [];
 
     public function __construct(UserRepository $userRepository)
     {
+        $this->with = ['roles'];
         $this->userRepository = $userRepository;
+        $this->middleware('permission:user-list|user-create|user-edit|user-delete', ['except' => ['index', 'show']]);
     }
 
     /**
@@ -23,7 +27,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        return $this->userRepository->getAll();
+        $users = $this->userRepository->getAll();
+        return new UserCollection($users);
     }
 
     /**
@@ -32,7 +37,7 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         $user = $this->userRepository->userCreate($request->validated());
-        return $user;
+        return new UserResource($user->load($this->with));
     }
 
     /**
@@ -40,15 +45,17 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return $this->userRepository->get($user);
+        $user = $this->userRepository->get($user);
+        return new UserResource($user->load($this->with));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        return $this->userRepository->userUpdate($user, $request->all());
+        $user = $this->userRepository->userUpdate($user, $request->validated());
+        return new UserResource($user->load($this->with));
     }
 
     /**
@@ -56,6 +63,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        return $this->userRepository->delete($user);
+        $user = $this->userRepository->delete($user);
+        return new UserResource($user);
     }
 }

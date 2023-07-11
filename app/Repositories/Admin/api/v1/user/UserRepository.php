@@ -15,6 +15,7 @@ class UserRepository extends BaseRepository
 
     /*
      *  create user
+     *  assign roles
      */
     public function userCreate(array $data)
     {
@@ -29,9 +30,22 @@ class UserRepository extends BaseRepository
 
     /*
     * update user
+    * update roles
     */
-    public function userUpdate(User $user, $request)
+    public function userUpdate(User $user, array $data)
     {
-        //
+        $data['name']  = $data['name'] ?? $user->name;
+        $data['email'] = $data['email'] ?? $user->email;
+
+        $user->update([
+            'name' => $data['name'],
+            'email' => $data['email']
+        ]);
+
+        if (isset($data['roles'])) {
+            $user->syncRoles($data['roles']);
+        }
+
+        return $user;
     }
 }

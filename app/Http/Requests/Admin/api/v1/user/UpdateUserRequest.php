@@ -27,7 +27,8 @@ class UpdateUserRequest extends FormRequest
         return [
             'name' => 'nullable|unique:users,name,' . $this->route('user')->id,
             'email' => 'nullable|unique:users,email,' . $this->route('user')->id,
-            'password' => 'required|confirmed'
+            'roles' => 'nullable|array',
+            'roles.*' => 'integer|exists:roles,id',
         ];
     }
 
@@ -41,11 +42,21 @@ class UpdateUserRequest extends FormRequest
     {
         $errors = [];
         foreach ($validator->errors()->getMessages() as $field => $messages) {
-            $errors[$field] = $messages[0];
+            if (strpos($field, 'roles.') === 0) {
+                $permissionId = explode('.', $field)[1];
+                $errors['roles'][] = $permissionId;
+            } else {
+                $errors[$field] = $messages[0];
+            }
+        }
+
+        if (isset($errors['roles'])) {
+            $invalidRoleIds = implode(' , ', $errors['roles']);
+            $errors['roles'] = count($errors['roles']) > 1 ? "Roles index's {$invalidRoleIds} are invalid." : "Roles index's {$invalidRoleIds} is invalid.";
         }
 
         throw new HttpResponseException(response()->json([
-            'message' => 'Failed to update user.',
+            'message' => 'Failed to create new user.',
             'errors' => $errors,
             'status' => false
         ], Response::HTTP_UNPROCESSABLE_ENTITY));

@@ -13,10 +13,6 @@ class UserRepository extends BaseRepository
         parent::__construct($user);
     }
 
-    /*
-     *  create user
-     *  assign roles
-     */
     public function userCreate(array $data)
     {
         $user = User::create([
@@ -28,10 +24,6 @@ class UserRepository extends BaseRepository
         return $user;
     }
 
-    /*
-    * update user
-    * update roles
-    */
     public function userUpdate(User $user, array $data)
     {
         $data['name']  = $data['name'] ?? $user->name;

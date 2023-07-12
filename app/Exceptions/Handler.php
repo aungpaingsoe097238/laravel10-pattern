@@ -6,6 +6,7 @@ use Throwable;
 use Illuminate\Http\Response;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Access\AuthorizationException;
+use Spatie\Permission\Exceptions\RoleDoesNotExist;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -52,6 +53,10 @@ class Handler extends ExceptionHandler
         }
         if ($e instanceof NotFoundHttpException) {
             return response()->json(['status' => false, 'message' => 'Incorect route'], Response::HTTP_NOT_FOUND);
+        }
+
+        if ($e instanceof RoleDoesNotExist) {
+            return response()->json(['status' => false, 'message' => 'Role not found'], Response::HTTP_BAD_REQUEST);
         }
 
         return parent::render($request, $e);

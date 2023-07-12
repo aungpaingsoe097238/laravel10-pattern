@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Admin\api\v1\auth;
 
 use App\Models\User;
+use Illuminate\Http\Response;
+use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\api\v1\auth\ChangePasswordAuthenticationRequest;
-use App\Http\Requests\Admin\api\v1\auth\LoginAuthenticationRequest;
-use App\Http\Requests\Admin\api\v1\auth\RegisterAuthenticationRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\Admin\api\v1\auth\AuthResource;
-use Illuminate\Http\Response;
+use App\Http\Requests\Admin\api\v1\auth\LoginAuthenticationRequest;
+use App\Http\Requests\Admin\api\v1\auth\RegisterAuthenticationRequest;
+use App\Http\Requests\Admin\api\v1\auth\ChangePasswordAuthenticationRequest;
 
 class AuthController extends Controller
 {
@@ -21,6 +22,8 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+        $role = Role::findOrFail(2);
+        $user->assignRole($role);
         return new AuthResource($user);
     }
 

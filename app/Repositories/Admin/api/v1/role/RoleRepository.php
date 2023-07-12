@@ -17,9 +17,7 @@ class RoleRepository extends BaseRepository
         $role = Role::create([
             'name' => $data['name'],
         ]);
-
         $role->syncPermissions($data['permissions'] ?? []);
-
         return $role;
     }
 

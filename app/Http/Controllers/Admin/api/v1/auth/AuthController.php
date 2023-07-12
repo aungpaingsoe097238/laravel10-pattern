@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\api\v1\auth;
 
 use App\Models\User;
+use App\Jobs\SendEmailJob;
 use Illuminate\Http\Response;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
@@ -12,15 +13,14 @@ use App\Http\Resources\Admin\api\v1\auth\AuthResource;
 use App\Http\Requests\Admin\api\v1\auth\LoginAuthenticationRequest;
 use App\Http\Requests\Admin\api\v1\auth\RegisterAuthenticationRequest;
 use App\Http\Requests\Admin\api\v1\auth\ChangePasswordAuthenticationRequest;
+use App\Jobs\SendMailJob;
 
 class AuthController extends Controller
 {
     public function register(RegisterAuthenticationRequest $request)
     {
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+        $user = User::create($request->validated() + [
+            'password' => Hash::make($request->validated()['password'])
         ]);
         $role = Role::findOrFail(2);
         $user->assignRole($role);

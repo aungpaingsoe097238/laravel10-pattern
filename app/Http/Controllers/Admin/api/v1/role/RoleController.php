@@ -17,7 +17,7 @@ class RoleController extends Controller
     public function __construct(RoleRepository $roleRepository)
     {
         $this->roleRepository = $roleRepository;
-        $this->middleware('permission:role-list|role-create|role-edit|role-delete', ['except' => ['index', 'show']]);
+        $this->middleware('permission:role-list|role-create|role-edit|role-delete');
     }
 
     /**

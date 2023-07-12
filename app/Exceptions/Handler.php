@@ -11,6 +11,7 @@ use Spatie\Permission\Exceptions\UnauthorizedException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -31,7 +32,6 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-
         });
     }
 
@@ -54,9 +54,14 @@ class Handler extends ExceptionHandler
         if ($e instanceof NotFoundHttpException) {
             return response()->json(['status' => false, 'message' => 'Incorect route'], Response::HTTP_NOT_FOUND);
         }
-
         if ($e instanceof RoleDoesNotExist) {
             return response()->json(['status' => false, 'message' => 'Role not found'], Response::HTTP_BAD_REQUEST);
+        }
+        if ($e instanceof MethodNotAllowedHttpException) {
+            $method = $request->getMethod();
+            $message = sprintf('%s method not allowed', $method);
+
+            return response()->json(['status' => false, 'message' => $message], Response::HTTP_METHOD_NOT_ALLOWED);
         }
 
         return parent::render($request, $e);

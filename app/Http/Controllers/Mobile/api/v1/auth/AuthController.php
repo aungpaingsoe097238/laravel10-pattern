@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Admin\api\v1\auth;
+namespace App\Http\Controllers\Mobile\api\v1\auth;
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Response;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Resources\Admin\api\v1\auth\AuthResource;
 use App\Http\Requests\Admin\api\v1\auth\LoginAuthenticationRequest;
 use App\Http\Requests\Admin\api\v1\auth\RegisterAuthenticationRequest;

@@ -11,20 +11,18 @@ abstract class BaseRepository
     {
         $this->model = $model;
     }
+
     public function getAll()
     {
-        $query = $this->model;
-
+        $results = $this->model;
         if ($this->model->hasNamedScope('filter')) {
-            $query->filter();
+            $results = $results->filter();
         }
-
-        $results = $query->when(request()->has('paginate'), function ($query) {
-            return $query->paginate(request()->get('paginate'));
-        }, function ($query) {
-            return $query->get();
-        });
-
+        if (request()->has('paginate')) {
+            $results = $results->paginate(request()->get('paginate'));
+        } else {
+            $results = $results->get();
+        }
         return $results;
     }
 

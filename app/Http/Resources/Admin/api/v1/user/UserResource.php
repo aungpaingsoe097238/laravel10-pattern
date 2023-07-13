@@ -17,8 +17,8 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         $routeName = Route::currentRouteName();
-        if ($routeName === 'user.destroy') {
-            return parent::toArray($request);
+        if ($routeName === 'user.destroy' || $routeName === "user.force_delete" ||  $routeName === "user.return_reject") {
+            return [];
         }
         return [
             'id' => $this->id,
@@ -43,10 +43,12 @@ class UserResource extends JsonResource
                 'user.store' => 'User create successfully',
                 'user.show' => 'User details retrieved successfully',
                 'user.update' => 'User updated successfully',
-                'user.destroy' => 'User deleted successfully',
+                'user.destroy' => 'User reject successfully',
+                'user.force_delete' => 'User force deletion successfully',
+                'user.return_reject' => 'User return rejected successfully',
                 default => 'Unknown route',
             },
-            'status' => in_array($routeName, ['user.store', 'user.show', 'user.update', 'user.destroy']),
+            'status' => in_array($routeName, ['user.store', 'user.show', 'user.update', 'user.destroy', 'user.force_delete', 'user.return_reject']),
         ];
     }
 }

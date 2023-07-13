@@ -24,6 +24,7 @@ class UserController extends Controller
 
     /**
      * Display a listing of the resource.
+     * all users
      */
     public function index()
     {
@@ -66,4 +67,24 @@ class UserController extends Controller
         $user = $this->userRepository->delete($user);
         return new UserResource($user);
     }
+
+    /**
+     * Removes a resource from storage
+     * force delete
+     */
+    public function userForceDelete($id)
+    {
+        $user = $this->userRepository->userForceDelete($id);
+        return new UserResource($user);
+    }
+
+    /**
+     * Removes a resource from storage
+     */
+    public function userReturnReject($id)
+    {
+        $user = $this->userRepository->userReturnReject($id);
+        return new UserResource($user);
+    }
+
 }

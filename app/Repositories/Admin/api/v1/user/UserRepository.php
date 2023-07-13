@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Admin\api\v1\user;
 
+use App\Http\Resources\Admin\api\v1\user\UserResource;
 use App\Models\User;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Hash;
@@ -39,5 +40,21 @@ class UserRepository extends BaseRepository
         }
 
         return $user;
+    }
+
+    /**
+     * force delete to user
+     */
+    public function userForceDelete($id)
+    {
+        return User::onlyTrashed()->findOrFail($id)->forceDelete(); 
+    }
+
+    /**
+     * return reject user
+     */
+    public function userReturnReject($id)
+    {
+        return User::onlyTrashed()->findOrFail($id)->restore();
     }
 }

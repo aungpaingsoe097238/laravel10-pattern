@@ -15,16 +15,6 @@ use App\Http\Requests\Admin\api\v1\auth\ChangePasswordAuthenticationRequest;
 
 class AuthController extends Controller
 {
-    public function register(RegisterAuthenticationRequest $request)
-    {
-        $user = User::create($request->validated() + [
-            'password' => Hash::make($request->validated()['password'])
-        ]);
-        $role = Role::findOrFail(2);
-        $user->assignRole($role);
-        return new AuthResource($user);
-    }
-
     public function login(LoginAuthenticationRequest $request)
     {
         if (Auth::attempt($request->validated())) {
@@ -32,7 +22,6 @@ class AuthController extends Controller
             $user['token'] = $user->createToken('laravel10')->accessToken;
             return new AuthResource($user->load('roles'));
         }
-
         return response()->json(['message' => 'Unauthorized.', 'status' => false], Response::HTTP_UNAUTHORIZED);
     }
 
@@ -40,17 +29,6 @@ class AuthController extends Controller
     {
         $user = Auth::user()->token();
         $user->revoke();
-        return new AuthResource($user);
-    }
-
-    public function changePassword(ChangePasswordAuthenticationRequest $request)
-    {
-        $user = Auth::user();
-        if (!Hash::check($request->current_password, $user->password)) {
-            return response()->json(['message' => 'The current password is incorrect.', 'status' => false], Response::HTTP_BAD_REQUEST);
-        }
-        $user->password = Hash::make($request->new_password);
-        $user->save();
         return new AuthResource($user);
     }
 }

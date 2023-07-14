@@ -3,17 +3,15 @@
 namespace App\Http\Controllers\Mobile\api\v1\auth;
 
 use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Http\Response;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
-use App\Http\Resources\Admin\api\v1\auth\AuthResource;
-use App\Http\Requests\Admin\api\v1\auth\LoginAuthenticationRequest;
-use App\Http\Requests\Admin\api\v1\auth\RegisterAuthenticationRequest;
-use App\Http\Requests\Admin\api\v1\auth\ChangePasswordAuthenticationRequest;
+use App\Http\Resources\Mobile\api\v1\auth\AuthResource;
+use App\Http\Requests\Mobile\api\v1\auth\LoginAuthenticationRequest;
+use App\Http\Requests\Mobile\api\v1\auth\RegisterAuthenticationRequest;
+use App\Http\Requests\Mobile\api\v1\auth\ChangePasswordAuthenticationRequest;
 
 class AuthController extends Controller
 {
@@ -22,7 +20,7 @@ class AuthController extends Controller
         $user = User::create($request->validated() + [
             'password' => Hash::make($request->validated()['password'])
         ]);
-        $role = Role::findOrFail(2);
+        $role = Role::findOrFail(1);
         $user->assignRole($role);
         return new AuthResource($user);
     }
@@ -32,9 +30,8 @@ class AuthController extends Controller
         if (Auth::attempt($request->validated())) {
             $user = Auth::user();
             $user['token'] = $user->createToken('laravel10')->accessToken;
-            return new AuthResource($user->load('roles'));
+            return new AuthResource($user);
         }
-
         return response()->json(['message' => 'Unauthorized.', 'status' => false], Response::HTTP_UNAUTHORIZED);
     }
 

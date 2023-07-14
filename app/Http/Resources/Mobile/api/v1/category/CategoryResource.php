@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Admin\api\v1\category;
+namespace App\Http\Resources\Mobile\api\v1\category;
 
-use App\Http\Resources\Admin\api\v1\post\PostCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Mobile\api\v1\post\PostCollection;
 
 class CategoryResource extends JsonResource
 {

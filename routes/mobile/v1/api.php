@@ -13,6 +13,8 @@ Route::middleware('auth:api')->group(function () {
 });
 
 // Authentication Management
+Route::post('request-otp', [AuthController::class, 'requestOtp'])->name('auth.request_otp');
+Route::post('verify-otp', [AuthController::class, 'verfiyOtp'])->name('auth.verify_otp');
 Route::post('register', [AuthController::class, 'register'])->name('auth.register');
 Route::post('login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:api')->name('auth.logout');

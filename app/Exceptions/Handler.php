@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Throwable;
+use PDOException;
 use BadMethodCallException;
 use Illuminate\Http\Response;
 use Illuminate\Auth\AuthenticationException;

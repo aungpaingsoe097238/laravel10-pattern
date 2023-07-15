@@ -20,7 +20,8 @@ class AuthController extends Controller
         $user = User::create($request->validated() + [
             'password' => Hash::make($request->validated()['password'])
         ]);
-        $role = Role::findOrFail(1);
+
+        $role = Role::findOrFail(2);
         $user->assignRole($role);
         return new AuthResource($user);
     }

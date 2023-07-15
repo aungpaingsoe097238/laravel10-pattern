@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Throwable;
+use BadMethodCallException;
 use Illuminate\Http\Response;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -52,10 +53,13 @@ class Handler extends ExceptionHandler
             return response()->json(['status' => false, 'message' => "Can't find $message"], Response::HTTP_NOT_FOUND);
         }
         if ($e instanceof NotFoundHttpException) {
-            return response()->json(['status' => false, 'message' => 'Incorect route'], Response::HTTP_NOT_FOUND);
+            return response()->json(['status' => false, 'message' => 'Incorect route.'], Response::HTTP_NOT_FOUND);
         }
         if ($e instanceof RoleDoesNotExist) {
-            return response()->json(['status' => false, 'message' => 'Role not found'], Response::HTTP_BAD_REQUEST);
+            return response()->json(['status' => false, 'message' => 'Role not found.'], Response::HTTP_BAD_REQUEST);
+        }
+        if ($e instanceof BadMethodCallException) {
+            return response()->json(['status' => false, 'message' => 'Method not found or invalid method call.'], Response::HTTP_BAD_REQUEST);
         }
         if ($e instanceof MethodNotAllowedHttpException) {
             $method = $request->getMethod();

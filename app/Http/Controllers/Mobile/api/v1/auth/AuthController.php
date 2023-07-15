@@ -8,10 +8,17 @@ use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+<<<<<<< HEAD
 use App\Http\Resources\Admin\api\v1\auth\AuthResource;
 use App\Http\Requests\Admin\api\v1\auth\LoginAuthenticationRequest;
 use App\Http\Requests\Admin\api\v1\auth\RegisterAuthenticationRequest;
 use App\Http\Requests\Admin\api\v1\auth\ChangePasswordAuthenticationRequest;
+=======
+use App\Http\Resources\Mobile\api\v1\auth\AuthResource;
+use App\Http\Requests\Mobile\api\v1\auth\LoginAuthenticationRequest;
+use App\Http\Requests\Mobile\api\v1\auth\RegisterAuthenticationRequest;
+use App\Http\Requests\Mobile\api\v1\auth\ChangePasswordAuthenticationRequest;
+>>>>>>> 9fea817e9b192f112ccef63e0874e2f5d6e8d204
 
 class AuthController extends Controller
 {
@@ -20,7 +27,7 @@ class AuthController extends Controller
         $user = User::create($request->validated() + [
             'password' => Hash::make($request->validated()['password'])
         ]);
-        $role = Role::findOrFail(2);
+        $role = Role::findOrFail(1);
         $user->assignRole($role);
         return new AuthResource($user);
     }
@@ -30,9 +37,8 @@ class AuthController extends Controller
         if (Auth::attempt($request->validated())) {
             $user = Auth::user();
             $user['token'] = $user->createToken('laravel10')->accessToken;
-            return new AuthResource($user->load('roles'));
+            return new AuthResource($user);
         }
-
         return response()->json(['message' => 'Unauthorized.', 'status' => false], Response::HTTP_UNAUTHORIZED);
     }
 

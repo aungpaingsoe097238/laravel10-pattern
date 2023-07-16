@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class RegisterAuthenticationRequest extends FormRequest
+class ChangePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,17 +25,15 @@ class RegisterAuthenticationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8|confirmed',
-            'code' => 'required|numeric|min:4'
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:8|confirmed',
         ];
     }
-
     /**
      * Handle a failed validation attempt.
      *
      * @param  \Illuminate\Contracts\Validation\Validator  $validator
+     * @param  \Illuminate\Http\Response;
      * @throws \Illuminate\Http\Exceptions\HttpResponseException
      */
     protected function failedValidation(Validator $validator)
@@ -46,9 +44,9 @@ class RegisterAuthenticationRequest extends FormRequest
         }
 
         throw new HttpResponseException(response()->json([
-            'message' => 'Registation failed.',
+            'message' => 'Failed to changed new password.',
             'errors' => $errors,
             'status' => false
-        ], Response::HTTP_UNAUTHORIZED));
+        ], Response::HTTP_BAD_REQUEST));
     }
 }

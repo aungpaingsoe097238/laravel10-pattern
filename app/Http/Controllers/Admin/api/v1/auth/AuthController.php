@@ -2,20 +2,15 @@
 
 namespace App\Http\Controllers\Admin\api\v1\auth;
 
-use App\Models\User;
 use Illuminate\Http\Response;
-use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\Admin\api\v1\auth\AuthResource;
-use App\Http\Requests\Admin\api\v1\auth\LoginAuthenticationRequest;
-use App\Http\Requests\Admin\api\v1\auth\RegisterAuthenticationRequest;
-use App\Http\Requests\Admin\api\v1\auth\ChangePasswordAuthenticationRequest;
+use App\Http\Requests\Admin\api\v1\auth\LoginRequest;
 
 class AuthController extends Controller
 {
-    public function login(LoginAuthenticationRequest $request)
+    public function login(LoginRequest $request)
     {
         if (Auth::attempt($request->validated())) {
             $user = Auth::user();

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Admin\api\v1\auth;
+namespace App\Http\Requests\Mobile\api\v1\auth;
 
 use Illuminate\Http\Response;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class LoginAuthenticationRequest extends FormRequest
+class LoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

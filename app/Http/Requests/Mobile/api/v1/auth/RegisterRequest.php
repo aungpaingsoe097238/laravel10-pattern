@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Admin\api\v1\auth;
+namespace App\Http\Requests\Mobile\api\v1\auth;
 
 use Illuminate\Http\Response;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class ChangePasswordAuthenticationRequest extends FormRequest
+class RegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,15 +25,17 @@ class ChangePasswordAuthenticationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'current_password' => 'required',
-            'new_password' => 'required|string|min:8|confirmed',
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8|confirmed',
+            'code' => 'required|numeric|min:4'
         ];
     }
+
     /**
      * Handle a failed validation attempt.
      *
      * @param  \Illuminate\Contracts\Validation\Validator  $validator
-     * @param  \Illuminate\Http\Response;
      * @throws \Illuminate\Http\Exceptions\HttpResponseException
      */
     protected function failedValidation(Validator $validator)
@@ -44,9 +46,9 @@ class ChangePasswordAuthenticationRequest extends FormRequest
         }
 
         throw new HttpResponseException(response()->json([
-            'message' => 'Failed to changed new password.',
+            'message' => 'Registation failed.',
             'errors' => $errors,
             'status' => false
-        ], Response::HTTP_BAD_REQUEST));
+        ], Response::HTTP_UNAUTHORIZED));
     }
 }

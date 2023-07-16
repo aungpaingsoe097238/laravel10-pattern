@@ -10,14 +10,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\Mobile\api\v1\auth\AuthResource;
-use App\Http\Requests\Mobile\api\v1\auth\LoginAuthenticationRequest;
-use App\Http\Requests\Mobile\api\v1\auth\RegisterAuthenticationRequest;
-use App\Http\Requests\Mobile\api\v1\auth\RequestOtpAuthenticationRequest;
-use App\Http\Requests\Mobile\api\v1\auth\ChangePasswordAuthenticationRequest;
+use App\Http\Requests\Mobile\api\v1\auth\LoginRequest;
+use App\Http\Requests\Mobile\api\v1\auth\RegisterRequest;
+use App\Http\Requests\Mobile\api\v1\auth\RequestOtpRequest;
+use App\Http\Requests\Mobile\api\v1\auth\ChangePasswordRequest;
 use App\Http\Requests\Mobile\api\v1\auth\forgotPassword\ForgotPasswordChangePasswordRequest;
 use App\Http\Requests\Mobile\api\v1\auth\forgotPassword\ForgotPasswordRequestOtpRequest;
 use App\Http\Requests\Mobile\api\v1\auth\forgotPassword\ForgotPasswordVerifyPasswordRequest;
-use App\Http\Requests\Mobile\api\v1\auth\VerifyOtpAuthenticationRequest;
+use App\Http\Requests\Mobile\api\v1\auth\VerifyOtpRequest;
 
 class AuthController extends Controller
 {
@@ -30,7 +30,7 @@ class AuthController extends Controller
     }
 
 
-    public function requestOtp(RequestOtpAuthenticationRequest $request)
+    public function requestOtp(RequestOtpRequest $request)
     {
         $data = [
             'email' => $request->email,
@@ -46,7 +46,7 @@ class AuthController extends Controller
         ]);
     }
 
-    public function verfiyOtp(VerifyOtpAuthenticationRequest $request)
+    public function verfiyOtp(VerifyOtpRequest $request)
     {
         $otp = OneTimePassword::where('status', false)
             ->where('code', $request->code)
@@ -68,7 +68,7 @@ class AuthController extends Controller
         ]);
     }
 
-    public function register(RegisterAuthenticationRequest $request)
+    public function register(RegisterRequest $request)
     {
         // Check OTP is verify
         $oneTimePassword = OneTimePassword::where('code', $request->code)
@@ -94,7 +94,7 @@ class AuthController extends Controller
         return new AuthResource($user->load($this->with));
     }
 
-    public function login(LoginAuthenticationRequest $request)
+    public function login(LoginRequest $request)
     {
         if (Auth::attempt($request->validated())) {
             $user = Auth::user();
@@ -111,7 +111,7 @@ class AuthController extends Controller
         return new AuthResource($user);
     }
 
-    public function changePassword(ChangePasswordAuthenticationRequest $request)
+    public function changePassword(ChangePasswordRequest $request)
     {
         $user = Auth::user();
         if (!Hash::check($request->current_password, $user->password)) {

@@ -59,9 +59,9 @@ class Handler extends ExceptionHandler
         if ($e instanceof RoleDoesNotExist) {
             return response()->json(['status' => false, 'message' => 'Role not found.'], Response::HTTP_BAD_REQUEST);
         }
-        if ($e instanceof BadMethodCallException) {
-            return response()->json(['status' => false, 'message' => 'Method not found or invalid method call.'], Response::HTTP_BAD_REQUEST);
-        }
+        // if ($e instanceof BadMethodCallException) {
+        //     return response()->json(['status' => false, 'message' => 'Method not found or invalid method call.'], Response::HTTP_BAD_REQUEST);
+        // }
         if ($e instanceof MethodNotAllowedHttpException) {
             $method = $request->getMethod();
             $message = sprintf('%s method not allowed', $method);

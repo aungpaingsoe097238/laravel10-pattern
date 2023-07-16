@@ -25,7 +25,7 @@ class AuthResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'token' => $this->when($request->routeIs('auth.login'), fn () => $this->token),
-            'roles' => new RoleCollection($this->whenLoaded('roles')),
+            'roles' => new RoleCollection($this->whenLoaded('roles', $this->roles)),
             'created_at' => $this->created_at->format('Y-m-d')
         ];
     }

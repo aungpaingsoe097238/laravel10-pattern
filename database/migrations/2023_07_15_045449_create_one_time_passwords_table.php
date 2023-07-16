@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('email');
             $table->integer('code');
             $table->boolean('status')->default(true);
+            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

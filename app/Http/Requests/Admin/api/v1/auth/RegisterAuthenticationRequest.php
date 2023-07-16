@@ -45,7 +45,7 @@ class RegisterAuthenticationRequest extends FormRequest
         }
 
         throw new HttpResponseException(response()->json([
-            'message' => 'Unauthorized.',
+            'message' => 'Registation failed.',
             'errors' => $errors,
             'status' => false
         ], Response::HTTP_UNAUTHORIZED));

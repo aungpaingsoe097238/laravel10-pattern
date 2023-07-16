@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Mobile\api\v1\auth;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\OneTimePassword;
 use Spatie\Permission\Models\Role;
@@ -13,89 +12,86 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\Mobile\api\v1\auth\AuthResource;
 use App\Http\Requests\Mobile\api\v1\auth\LoginAuthenticationRequest;
 use App\Http\Requests\Mobile\api\v1\auth\RegisterAuthenticationRequest;
+use App\Http\Requests\Mobile\api\v1\auth\RequestOtpAuthenticationRequest;
 use App\Http\Requests\Mobile\api\v1\auth\ChangePasswordAuthenticationRequest;
+use App\Http\Requests\Mobile\api\v1\auth\forgotPassword\ForgotPasswordChangePasswordRequest;
+use App\Http\Requests\Mobile\api\v1\auth\forgotPassword\ForgotPasswordRequestOtpRequest;
+use App\Http\Requests\Mobile\api\v1\auth\forgotPassword\ForgotPasswordVerifyPasswordRequest;
+use App\Http\Requests\Mobile\api\v1\auth\VerifyOtpAuthenticationRequest;
 
 class AuthController extends Controller
 {
-    public function requestOtp(Request $request)
+
+    protected $with = [];
+
+    public function __construct()
     {
-        $request->validate([
-            'email' => 'required'
-        ]);
+        $this->with = ['roles'];
+    }
 
-        $existingRecord = OneTimePassword::where('email', $request->email)->first();
 
-        if ($existingRecord) {
-            $existingRecord->code = rand(1000, 9999);
-            $existingRecord->status = false;
-            $existingRecord->save();
-            return response()->json([
-                'message' => 'OTP code has been resent. Code is ' . $existingRecord->code,
-                'status'  => true
-            ]);
-        }
-
-        $oneTimePassword = OneTimePassword::create([
+    public function requestOtp(RequestOtpAuthenticationRequest $request)
+    {
+        $data = [
             'email' => $request->email,
+            'status' => false,
             'code' => rand(1000, 9999),
-            'status' => false
-        ]);
+        ];
+
+        $oneTimePassword = OneTimePassword::updateOrCreate(['email' => $request->email], $data);
 
         return response()->json([
-            'message' => 'Otp code is ' . $oneTimePassword->code,
-            'status' => true
+            'message' => 'OTP is ' . $oneTimePassword->code,
+            'status'  => false
         ]);
     }
 
-    public function verfiyOtp(Request $request)
+    public function verfiyOtp(VerifyOtpAuthenticationRequest $request)
     {
-        $request->validate([
-            'email' => 'required',
-            'code'   => 'required',
-        ]);
+        $otp = OneTimePassword::where('status', false)
+            ->where('code', $request->code)
+            ->first();
 
-        // Same record data from onetimepassword
-        $existingRecord = OneTimePassword::where('status', false)
-            ->where('email', $request->email)
-            ->where('code', $request->code)->first();
-
-        if (is_null($existingRecord)) {
+        if (!$otp) {
             return response()->json([
-                'message' => 'Otp is invalid',
+                'message' => 'Invalid OTP.',
                 'status'  => false
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
-        $existingRecord->update([
-            'status' => true
-        ]);
+        $otp->status = true;
+        $otp->save();
 
         return response()->json([
-            'message' => 'Otp is valid',
+            'message' => 'Valid OTP.',
             'status'  => true
-        ], 200);
+        ]);
     }
 
     public function register(RegisterAuthenticationRequest $request)
     {
-        $existingRecord = OneTimePassword::where('email',$request->email)
-        ->where('code',$request->code)
-        ->where('status',true)->first();
-        
-        if(is_null($existingRecord)){
+        // Check OTP is verify
+        $oneTimePassword = OneTimePassword::where('code', $request->code)
+            ->where('status', true)->first();
+
+        if (!$oneTimePassword) {
             return response()->json([
                 'message' => 'Please verify your email address.',
-                'status'  => false 
-            ],400);
+                'status'  => false
+            ], 400);
         }
 
         $user = User::create($request->validated() + [
-            'password' => Hash::make($request->validated()['password'])
+            'password' => Hash::make($request->password)
         ]);
 
-        $role = Role::findOrFail(2);
+        $oneTimePassword->update([
+            'user_id' => $user->id
+        ]);
+
+        $role = Role::findOrFail(2); // Change your role id
         $user->assignRole($role);
-        return new AuthResource($user);
+        return new AuthResource($user->load($this->with));
     }
 
     public function login(LoginAuthenticationRequest $request)
@@ -103,7 +99,7 @@ class AuthController extends Controller
         if (Auth::attempt($request->validated())) {
             $user = Auth::user();
             $user['token'] = $user->createToken('laravel10')->accessToken;
-            return new AuthResource($user);
+            return new AuthResource($user->load($this->with));
         }
         return response()->json(['message' => 'Unauthorized.', 'status' => false], Response::HTTP_UNAUTHORIZED);
     }
@@ -124,5 +120,62 @@ class AuthController extends Controller
         $user->password = Hash::make($request->new_password);
         $user->save();
         return new AuthResource($user);
+    }
+
+    public function forgotPasswordRequestOtp(ForgotPasswordRequestOtpRequest $request)
+    {
+        $oneTimePassword = OneTimePassword::where('email', $request->email)->first();
+
+        if (!$oneTimePassword) {
+            return response()->json([
+                'message' => 'Email not found.Please registation first.',
+                'status'  => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $oneTimePassword->update([
+            'code' => rand(1000, 9999)
+        ]);
+
+        return response()->json([
+            'message' => 'OTP is ' . $oneTimePassword->code,
+            'status'  => true
+        ]);
+    }
+
+    public function forgotPasswordVerify(ForgotPasswordVerifyPasswordRequest $request)
+    {
+        $otp = OneTimePassword::where('code', $request->code)->first();
+
+        if (!$otp) {
+            return response()->json([
+                'message' => 'Invalid OTP.',
+                'status'  => false
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Valid OTP.',
+            'status'  => true
+        ]);
+    }
+
+    public function forgotPasswordChangePassword(ForgotPasswordChangePasswordRequest $request)
+    {
+        $oneTimePassword = OneTimePassword::where('code', $request->code)
+            ->where('status', true)
+            ->first();
+
+        if (!$oneTimePassword) {
+            return response()->json([
+                'message' => 'Please verify your email address.',
+                'status'  => false
+            ]);
+        }
+
+        $user = $oneTimePassword->user;
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+        return new AuthResource($user->load($this->with));
     }
 }

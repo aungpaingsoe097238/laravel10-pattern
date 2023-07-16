@@ -13,9 +13,12 @@ Route::middleware('auth:api')->group(function () {
 });
 
 // Authentication Management
-Route::post('request-otp', [AuthController::class, 'requestOtp'])->name('auth.request_otp');
-Route::post('verify-otp', [AuthController::class, 'verfiyOtp'])->name('auth.verify_otp');
+Route::post('request_otp', [AuthController::class, 'requestOtp'])->name('auth.request_otp');
+Route::post('verify_otp', [AuthController::class, 'verfiyOtp'])->name('auth.verify_otp');
 Route::post('register', [AuthController::class, 'register'])->name('auth.register');
 Route::post('login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:api')->name('auth.logout');
 Route::post('change_password', [AuthController::class, 'changePassword'])->middleware('auth:api')->name('auth.change_password');
+Route::post('forgot_password_request_otp', [AuthController::class, 'forgotPasswordRequestOtp'])->name('auth.forgot_password_request_otp');
+Route::post('forgot_password_verify', [AuthController::class, 'forgotPasswordVerify'])->name('auth.forgot_password_verify');
+Route::post('forgot_password_change_password', [AuthController::class, 'forgotPasswordChangePassword'])->name('auth.forgot_password_change_password');

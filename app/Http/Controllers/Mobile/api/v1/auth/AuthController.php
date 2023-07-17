@@ -21,7 +21,6 @@ use App\Http\Requests\Mobile\api\v1\auth\VerifyOtpRequest;
 
 class AuthController extends Controller
 {
-
     protected $with = [];
 
     public function __construct()

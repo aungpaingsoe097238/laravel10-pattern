@@ -2,10 +2,14 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "aliyuncs/oss-sdk-php": "^2.6",
         "flipbox/lumen-generator": "^9.2",
         "flugger/laravel-responder": "^3.3",
         "guzzlehttp/guzzle": "^7.2",

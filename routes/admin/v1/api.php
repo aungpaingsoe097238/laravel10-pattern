@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\api\v1\attachment\AttachmentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\api\v1\auth\AuthController;
 use App\Http\Controllers\Admin\api\v1\post\PostController;
@@ -20,6 +21,8 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('user', UserController::class);
     Route::delete('force_delete/{id}', [UserController::class, 'userForceDelete'])->name('user.force_delete');
     Route::post('return_reject/{id}', [UserController::class, 'userReturnReject'])->name('user.return_reject');
+    // Attachment Management
+    Route::apiResource('attachment', AttachmentController::class);
 });
 
 // Authentication Management

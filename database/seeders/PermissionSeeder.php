@@ -33,7 +33,11 @@ class PermissionSeeder extends Seeder
             'user-list',
             'user-create',
             'user-edit',
-            'user-delete'
+            'user-delete',
+            'image-list',
+            'image-create',
+            'image-edit',
+            'image-delete'
         ];
 
         foreach ($permissions as $permission) {

@@ -16,8 +16,11 @@ class PermissionController extends Controller
 
     public function __construct(PermissionRepository $permissionRepository)
     {
-        $this->middleware('permission:permission-list|permission-create|permission-edit|permission-delete');
         $this->permissionRepository = $permissionRepository;
+        $this->middleware('permission:post-list', ['only' => ['index','show']]);
+        $this->middleware('permission:post-create', ['only' => ['create','store']]);
+        $this->middleware('permission:post-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:post-delete', ['only' => ['destroy']]);
     }
     /**
      * Display a listing of the resource.

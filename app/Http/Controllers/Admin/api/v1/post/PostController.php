@@ -19,7 +19,10 @@ class PostController extends Controller
     {
         $this->postRepository = $postRepository;
         $this->with = ['category'];
-        $this->middleware('permission:post-list|post-create|post-edit|post-delete', ['except' => ['index', 'show']]);
+        $this->middleware('permission:post-list', ['only' => ['index','show']]);
+        $this->middleware('permission:post-create', ['only' => ['create','store']]);
+        $this->middleware('permission:post-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:post-delete', ['only' => ['destroy']]);
     }
 
     /**

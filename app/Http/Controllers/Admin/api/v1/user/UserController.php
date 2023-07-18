@@ -19,7 +19,10 @@ class UserController extends Controller
     {
         $this->with = ['roles'];
         $this->userRepository = $userRepository;
-        $this->middleware('permission:user-list|user-create|user-edit|user-delete', ['except' => ['index', 'show']]);
+        $this->middleware('permission:user-list', ['only' => ['index','show']]);
+        $this->middleware('permission:user-create', ['only' => ['create','store']]);
+        $this->middleware('permission:user-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:user-delete', ['only' => ['destroy']]);
     }
 
     /**

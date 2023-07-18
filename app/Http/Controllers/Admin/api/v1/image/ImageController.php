@@ -18,6 +18,10 @@ class ImageController extends Controller
     {
         $this->with = ['user'];
         $this->imageRepository = $imageRepository;
+        $this->middleware('permission:image-list', ['only' => ['index','show']]);
+        $this->middleware('permission:image-create', ['only' => ['create','store']]);
+        $this->middleware('permission:image-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:image-delete', ['only' => ['destroy']]);
     }
 
     /**

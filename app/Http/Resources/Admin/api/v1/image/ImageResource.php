@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Resources\Admin\api\v1\post;
+namespace App\Http\Resources\Admin\api\v1\image;
 
+use App\Http\Resources\Admin\api\v1\user\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\Admin\api\v1\category\CategoryResource;
 
-class PostResource extends JsonResource
+class ImageResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,20 +17,19 @@ class PostResource extends JsonResource
     public function toArray(Request $request): array
     {
         $routeName = Route::currentRouteName();
-        if ($routeName === 'posts.destroy') {
+        if ($routeName === 'images.destroy') {
             return parent::toArray($request);
         }
 
         return [
             'id' => $this->id,
-            'title' => $this->title,
-            'category' => new CategoryResource($this->whenLoaded('category')),
-            'category_id' => $this->category->id,
-            'description' => $this->when(!$request->routeIs('posts.index'), fn () => $this->description), // show only in posts.index
+            'full_url' => $this->full_url,
+            'user_id' => $this->user_id,
+            'user' => new UserResource($this->whenLoaded('user')),
             'created_at' => $this->created_at->format('Y-m-d')
         ];
     }
-    
+
     /**
      * Get additional data that should be returned with the resource array.
      *
@@ -42,13 +41,13 @@ class PostResource extends JsonResource
         $routeName = Route::currentRouteName();
         return [
             'message' => match ($routeName) {
-                'posts.store' => 'Post create successfully',
-                'posts.show' => 'Post details retrieved successfully',
-                'posts.update' => 'Post updated successfully',
-                'posts.destroy' => 'Post deleted successfully',
+                'images.store' => 'Image create successfully',
+                'images.show' => 'Image details retrieved successfully',
+                'images.update' => 'Image updated successfully',
+                'images.destroy' => 'Image deleted successfully',
                 default => 'Unknown route',
             },
-            'status' => in_array($routeName, ['posts.store', 'posts.show', 'posts.update', 'posts.destroy']),
+            'status' => in_array($routeName, ['images.store', 'images.show', 'images.update', 'images.destroy']),
         ];
     }
 }

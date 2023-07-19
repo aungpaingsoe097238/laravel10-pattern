@@ -3,12 +3,11 @@
 namespace Database\Factories;
 
 use App\Models\Category;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Carbon\Carbon;
-
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Post>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
  */
 class PostFactory extends Factory
 {

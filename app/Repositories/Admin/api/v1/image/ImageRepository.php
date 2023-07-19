@@ -19,7 +19,7 @@ class ImageRepository extends BaseRepository
 
     public function uploadImage($data)
     {
-        $response = $this->ossImageService->uploadImage($data['image']);
+        $response = $this->ossImageService->uploadImageFile($data['image']);
         $image = Image::create($response + ['user_id' => Auth::user()->id]);
         return $image;
     }

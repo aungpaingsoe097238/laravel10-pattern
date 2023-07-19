@@ -3,8 +3,9 @@
 namespace App\Providers;
 
 use App\Repositories\BaseRepository;
-use App\Repositories\BaseRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Validator;
+use App\Repositories\BaseRepositoryInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +22,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Validator::extend('image64', function ($attribute, $value, $parameters, $validator) {
+            $decodedImage = base64_decode($value);
+            $f = finfo_open();
+            $mime_type = finfo_buffer($f, $decodedImage, FILEINFO_MIME_TYPE);
+
+            return str_starts_with($mime_type, 'image/');
+        });
     }
 }

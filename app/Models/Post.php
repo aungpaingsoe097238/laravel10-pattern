@@ -2,16 +2,28 @@
 
 namespace App\Models;
 
+use App\Models\Image;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
 
 class Post extends Model
 {
     use HasFactory;
 
     protected $fillable = ['title', 'category_id', 'description'];
+
+    public function image() : MorphOne
+    {
+        return $this->morphOne(Image::class, 'imageable');
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
 
     public function scopeFilter($query)
     {
@@ -40,11 +52,5 @@ class Post extends Model
         if ($order_by) {
             $query->orderBy('id', $order_by);
         }
-
-    }
-
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
     }
 }

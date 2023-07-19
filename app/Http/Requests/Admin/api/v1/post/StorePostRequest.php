@@ -27,7 +27,8 @@ class StorePostRequest extends FormRequest
         return [
             'title' => 'string|required',
             'category_id' => 'required|exists:categories,id|numeric',
-            'description' => 'nullable'
+            'description' => 'nullable',
+            'image' => 'nullable|image64', // image64 is custom validate at appserviceprovider
         ];
     }
 
@@ -51,3 +52,5 @@ class StorePostRequest extends FormRequest
         ], Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 }
+
+

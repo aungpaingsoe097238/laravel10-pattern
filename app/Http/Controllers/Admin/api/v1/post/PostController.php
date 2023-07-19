@@ -39,7 +39,7 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        $post = $this->postRepository->create($request->validated());
+        $post = $this->postRepository->createPost($request->validated());
         return new PostResource($post->load($this->with));
     }
 

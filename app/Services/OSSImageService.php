@@ -3,13 +3,13 @@
 namespace App\Services;
 
 use OSS\OssClient;
-use OSS\Core\OssException;
 
 class OSSImageService
 {
     private $ossClient;
     private $bucket;
     private $endpoint;
+    private $defaultACL = 'public-read';
 
     public function __construct()
     {
@@ -21,53 +21,26 @@ class OSSImageService
     }
 
     /**
-     *  Base64 File
+     * OSS Image Uploaded
      */
-    public function uploadImageBase64($imageData, $path = 'uploads', $fileName = null, $acl = null)
+    public function uploadImage($image, $path = 'uploads', $fileName = null, $acl = null)
     {
-        $decodedImage = base64_decode($imageData);
-        return $this->uploadImage($decodedImage, $path, $fileName, $acl);
-    }
 
-    /**
-     *  Normal File
-     */
-    public function uploadImageFile($image, $path = 'uploads', $fileName = null, $acl = null)
-    {
-        $fileContents = base64_decode($image->getPathname());
-        return $this->uploadImage($fileContents, $path, $fileName, $acl);
-    }
-
-    /**
-     *  Delete File From OSS Cloud
-     */
-    public function deleteImage($imageUrl)
-    {
-        $path = $this->getPathFromUrl($imageUrl);
-        $this->ossClient->deleteObject($this->bucket, $path);
-        return true;
-    }
-
-    /**
-     *  Upload File To OSS
-     */
-    private function uploadImage($imageContents, $path, $fileName, $acl)
-    {
         if (!$fileName) {
-            $fileName = time() . '.jpg';
+            $fileName = time() . '_' . $image->getClientOriginalName();
         }
 
         $fullPath = $path . '/' . $fileName;
 
-        $this->ossClient->putObject($this->bucket, $fullPath, $imageContents, [
+        $this->ossClient->uploadFile($this->bucket, $fullPath, $image->getPathname(), [
             OssClient::OSS_HEADERS => [
-                'x-oss-object-acl' => $acl ?: OssClient::OSS_ACL_TYPE_PUBLIC_READ,
+                'x-oss-object-acl' => $acl ?: $this->defaultACL,
             ],
         ]);
 
         $fullUrl = $this->getFullUrl($fullPath);
-        $mimeType = finfo_buffer(finfo_open(), $imageContents, FILEINFO_MIME_TYPE);
-        $size = strlen($imageContents);
+        $mimeType = $image->getMimeType();
+        $size = $image->getSize();
 
         return [
             'file_name' => $fileName,
@@ -75,6 +48,16 @@ class OSSImageService
             'mime_type' => $mimeType,
             'size' => $size,
         ];
+    }
+
+    /**
+     * OSS Image Deleted
+     */
+    public function deleteImage($imageUrl)
+    {
+        $path = $this->getPathFromUrl($imageUrl);
+        $this->ossClient->deleteObject($this->bucket, $path);
+        return true;
     }
 
     private function getFullUrl($path)

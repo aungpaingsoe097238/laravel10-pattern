@@ -18,14 +18,32 @@ class PostRepository extends BaseRepository
         parent::__construct($post);
     }
 
-    public function createPost($data)
+    public function createPost($data): Post
     {
-        $post = Post::create($data);
-        $response = $this->ossImageService->uploadImageBase64($data['image']);
-        if ($response) {
-            $image = new Image($response + ['user_id' => Auth::user()->id]);
-            $post->image()->save($image);
+        // Upload new image to OSS cloud
+        $image = $this->ossImageService->uploadImage($data['image']);
+        // Create new image
+        $imageData = Image::create($image + ['user_id' => Auth::user()->id]);
+        // Create new post
+        $post = Post::create($data + ['image_id' => $imageData->id]);
+        return $post;
+    }
+
+    public function updateImage($id, $data): Post
+    {
+        $post = Post::findOrFail($id);
+        // Check if the post has an existing image
+        if ($post->image) {
+            // Delete old image from OSS cloud
+            $this->ossImageService->deleteImage($post->image->full_url);
         }
+        // Upload new image to OSS cloud
+        $imageData = $this->ossImageService->uploadImage($data['image']);
+        // Create or update the image associated with the post
+        $image = $post->image()->updateOrCreate([], $imageData + ['user_id' => Auth::id()]);
+        // Update image_id to the current post
+        $post->update(['image_id' => $image->id]);
+        // Return the updated post instance
         return $post;
     }
 }

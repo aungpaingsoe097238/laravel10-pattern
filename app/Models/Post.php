@@ -13,16 +13,16 @@ class Post extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'category_id', 'description'];
-
-    public function image() : MorphOne
-    {
-        return $this->morphOne(Image::class, 'imageable');
-    }
+    protected $fillable = ['title', 'category_id', 'description', 'image_id'];
 
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function image(): BelongsTo
+    {
+        return $this->belongsTo(Image::class);
     }
 
     public function scopeFilter($query)

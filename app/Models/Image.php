@@ -11,12 +11,7 @@ class Image extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['full_url', 'size', 'file_name', 'user_id', 'mime_type', 'imagable_id', 'imagable_type'];
-
-    public function imageable(): MorphTo
-    {
-        return $this->morphTo();
-    }
+    protected $fillable = ['full_url', 'size', 'file_name', 'user_id', 'mime_type'];
 
     public function user(): BelongsTo
     {

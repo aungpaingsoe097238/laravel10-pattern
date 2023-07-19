@@ -5,6 +5,7 @@ namespace App\Http\Resources\Mobile\api\v1\post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Admin\api\v1\image\ImageResource;
 use App\Http\Resources\Mobile\api\v1\category\CategoryResource;
 
 class PostResource extends JsonResource
@@ -27,6 +28,7 @@ class PostResource extends JsonResource
             'category' => new CategoryResource($this->whenLoaded('category')),
             'category_id' => $this->category->id,
             'description' => $this->when(!$request->routeIs('posts.index'), fn () => $this->description), // show only in posts.index
+            'image' => new ImageResource($this->whenLoaded('image')),
             'created_at' => $this->created_at->format('Y-m-d')
         ];
     }

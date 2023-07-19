@@ -18,8 +18,6 @@ return new class extends Migration
             $table->unsignedBigInteger('size');
             $table->string('mime_type');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->unsignedBigInteger('imageable_id')->nullable();
-            $table->string('imageable_type')->nullable();
             $table->timestamps();
         });
     }

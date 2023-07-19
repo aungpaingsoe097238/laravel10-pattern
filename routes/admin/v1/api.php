@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\api\v1\permission\PermissionController;
 Route::middleware('auth:api')->group(function () {
     // Post Management
     Route::apiResource('posts', PostController::class);
+    Route::post('post_image_update/{id}', [PostController::class,'updateImage'])->name('post.image_update');
     // Category Management
     Route::apiResource('categories', CategoryController::class);
     // Role & Psermssions Management

@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StorePostRequest extends FormRequest
+class UpdateImageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,11 +25,7 @@ class StorePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'string|required',
-            'category_id' => 'required|exists:categories,id|numeric',
-            'description' => 'nullable',
-            'image' => 'nullable|file|mimes:png,jpg'
-            //'image' => 'nullable|image64', // image64 is custom validate at appserviceprovider
+            'image' => 'required|file|mimes:png,jpg'
         ];
     }
 
@@ -47,11 +43,9 @@ class StorePostRequest extends FormRequest
         }
 
         throw new HttpResponseException(response()->json([
-            'message' => 'Failed to create new post.',
+            'message' => 'Failed to update post image.',
             'errors' => $errors,
             'status' => false
         ], Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 }
-
-

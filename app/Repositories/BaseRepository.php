@@ -26,24 +26,24 @@ class BaseRepository implements BaseRepositoryInterface
         return $results;
     }
 
-    public function get(Model $model)
+    public function get(Model $model) : Model
     {
         return $model;
     }
 
-    public function create(array $data)
+    public function create(array $data) : Model
     {
         $model = $this->model->create($data);
         return $model;
     }
 
-    public function update(Model $model, array $data)
+    public function update(Model $model, array $data) : Model
     {
         $model->update($data);
         return $model;
     }
 
-    public function delete(Model $model)
+    public function delete(Model $model) : void
     {
         $model->delete();
     }

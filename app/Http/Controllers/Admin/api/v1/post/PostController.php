@@ -74,7 +74,7 @@ class PostController extends Controller
     /**
      * Update Image
      */
-    public function updateImage(UpdateImageRequest $request, $id)
+    public function updateImage(UpdateImageRequest $request, $id) : PostResource
     {
         $post = $this->postRepository->updateImage($id, $request->validated());
         return new PostResource($post->load($this->with));

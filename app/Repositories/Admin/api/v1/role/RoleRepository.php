@@ -12,7 +12,11 @@ class RoleRepository extends BaseRepository
         parent::__construct($role);
     }
 
-    public function createRoleWithPermissions(array $data)
+    /**
+     *  @param Role
+     *  Create Permissions for Role
+     */
+    public function createRoleWithPermissions(array $data): Role
     {
         $role = Role::create([
             'name' => $data['name'],
@@ -21,7 +25,11 @@ class RoleRepository extends BaseRepository
         return $role;
     }
 
-    public function updateRoleWithPermissions(Role $role, array $data)
+    /**
+     *  @param Role
+     *  Upldate Permission for Role
+     */
+    public function updateRoleWithPermissions(Role $role, array $data): Role
     {
         $data['name'] = $data['name'] ?? $role->name;
         $role->update([

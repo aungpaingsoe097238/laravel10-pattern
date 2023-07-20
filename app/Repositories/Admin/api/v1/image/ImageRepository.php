@@ -5,28 +5,57 @@ namespace App\Repositories\Admin\api\v1\image;
 use App\Models\Image;
 use App\Services\OSSImageService;
 use App\Repositories\BaseRepository;
+use App\Services\LocalImageService;
 use Auth;
 
 class ImageRepository extends BaseRepository
 {
-    protected $ossImageService;
+    protected $ossImageService, $localImageService;
 
-    public function __construct(Image $image, OSSImageService $ossImageService)
+    public function __construct(Image $image, OSSImageService $ossImageService, LocalImageService $localImageService)
     {
         parent::__construct($image);
         $this->ossImageService = $ossImageService;
+        $this->localImageService = $localImageService;
     }
 
-    public function uploadImage($data)
+    /**
+     * Upload OSS Image
+     */
+    public function uploadOssImage($data): Image
     {
-        $response = $this->ossImageService->uploadImageFile($data['image']);
-        $image = Image::create($response + ['user_id' => Auth::user()->id]);
+        $imageData = $this->ossImageService->uploadImage($data['image']);
+        $image = Image::create($imageData + ['user_id' => Auth::user()->id]);
         return $image;
     }
 
-    public function deleteImage(Image $image)
+    /**
+     *  Delete OSS Image
+     */
+    public function deleteOssImage(Image $image): void
     {
         $data = $this->ossImageService->deleteImage($image['full_url']);
+        if ($data) {
+            $image->delete();
+        }
+    }
+
+    /**
+     *  Upload Local Image
+     */
+    public function uploadLocalImage($data) : Image
+    {
+        $imageData = $this->localImageService->uploadImage($data['image']);
+        $image = Image::create($imageData + ['user_id' => Auth::user()->id]);
+        return $image;
+    }
+
+    /**
+     *  Delete Local Image
+     */
+    public function deleteLocalImage(Image $image): void
+    {
+        $data = $this->localImageService->deleteImage($image['full_url']);
         if ($data) {
             $image->delete();
         }

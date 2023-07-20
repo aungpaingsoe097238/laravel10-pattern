@@ -18,7 +18,7 @@ class PostRepository extends BaseRepository
         parent::__construct($post);
     }
 
-    public function createPost($data): Post
+    public function createPost($data) : Post
     {
         // Upload new image to OSS cloud
         $image = $this->ossImageService->uploadImage($data['image']);

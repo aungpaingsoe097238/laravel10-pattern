@@ -25,7 +25,7 @@ class PermissionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index() : PermissionCollection
     {
         $permissions = $this->permissionRepository->getAll();
         return new PermissionCollection($permissions);
@@ -34,7 +34,7 @@ class PermissionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePermissionRequest $request)
+    public function store(StorePermissionRequest $request) : PermissionResource
     {
         $permission = $this->permissionRepository->create($request->validated());
         return new PermissionResource($permission);
@@ -43,7 +43,7 @@ class PermissionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Permission $permission)
+    public function show(Permission $permission): PermissionResource
     {
         $permission = $this->permissionRepository->get($permission);
         return new PermissionResource($permission);
@@ -52,7 +52,7 @@ class PermissionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePermissionRequest $request, Permission $permission)
+    public function update(UpdatePermissionRequest $request, Permission $permission): PermissionResource
     {
         $permission = $this->permissionRepository->update($permission, $request->validated());
         return new PermissionResource($permission);
@@ -61,8 +61,9 @@ class PermissionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Permission $permission)
+    public function destroy(Permission $permission): PermissionResource
     {
-        return $this->permissionRepository->delete($permission);
+        $permission = $this->permissionRepository->delete($permission);
+        return new PermissionResource($permission);
     }
 }

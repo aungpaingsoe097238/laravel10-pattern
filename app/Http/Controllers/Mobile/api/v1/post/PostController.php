@@ -23,7 +23,7 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): PostCollection
     {
         $posts = $this->postRepository->getAll();
         return new PostCollection($posts);
@@ -32,7 +32,7 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Post $post)
+    public function show(Post $post): PostResource
     {
         $post = $this->postRepository->get($post);
         return new PostResource($post->load($this->with));

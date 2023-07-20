@@ -19,9 +19,9 @@ class UserController extends Controller
     {
         $this->with = ['roles'];
         $this->userRepository = $userRepository;
-        $this->middleware('permission:user-list', ['only' => ['index','show']]);
-        $this->middleware('permission:user-create', ['only' => ['create','store']]);
-        $this->middleware('permission:user-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:user-list', ['only' => ['index', 'show']]);
+        $this->middleware('permission:user-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:user-edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:user-delete', ['only' => ['destroy']]);
     }
 
@@ -29,7 +29,7 @@ class UserController extends Controller
      * Display a listing of the resource.
      * all users
      */
-    public function index()
+    public function index(): UserCollection
     {
         $users = $this->userRepository->getAll();
         return new UserCollection($users);
@@ -38,7 +38,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreUserRequest $request)
+    public function store(StoreUserRequest $request): UserResource
     {
         $user = $this->userRepository->userCreate($request->validated());
         return new UserResource($user->load($this->with));
@@ -47,7 +47,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(User $user): UserResource
     {
         $user = $this->userRepository->get($user);
         return new UserResource($user->load($this->with));
@@ -56,7 +56,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UpdateUserRequest $request, User $user): UserResource
     {
         $user = $this->userRepository->userUpdate($user, $request->validated());
         return new UserResource($user->load($this->with));
@@ -65,7 +65,7 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(User $user): UserResource
     {
         $user = $this->userRepository->delete($user);
         return new UserResource($user);
@@ -75,7 +75,7 @@ class UserController extends Controller
      * Removes a resource from storage
      * force delete
      */
-    public function userForceDelete($id)
+    public function userForceDelete($id): UserResource
     {
         $user = $this->userRepository->userForceDelete($id);
         return new UserResource($user);
@@ -89,5 +89,4 @@ class UserController extends Controller
         $user = $this->userRepository->userReturnReject($id);
         return new UserResource($user);
     }
-
 }

@@ -14,7 +14,10 @@ class UserRepository extends BaseRepository
         parent::__construct($user);
     }
 
-    public function userCreate(array $data)
+    /**
+     *  Create new User with assign Roles
+     */
+    public function userCreate(array $data): User
     {
         $user = User::create([
             'name' => $data['name'],
@@ -25,7 +28,10 @@ class UserRepository extends BaseRepository
         return $user;
     }
 
-    public function userUpdate(User $user, array $data)
+    /**
+     *  Update User and assign Roles
+     */
+    public function userUpdate(User $user, array $data) : User
     {
         $data['name']  = $data['name'] ?? $user->name;
         $data['email'] = $data['email'] ?? $user->email;
@@ -43,17 +49,17 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * force delete to user
+     * Force Delete User
      */
-    public function userForceDelete($id)
+    public function userForceDelete($id) : bool
     {
-        return User::onlyTrashed()->findOrFail($id)->forceDelete(); 
+        return User::onlyTrashed()->findOrFail($id)->forceDelete();
     }
 
     /**
-     * return reject user
+     * Reutrn Reject User
      */
-    public function userReturnReject($id)
+    public function userReturnReject($id) : bool
     {
         return User::onlyTrashed()->findOrFail($id)->restore();
     }

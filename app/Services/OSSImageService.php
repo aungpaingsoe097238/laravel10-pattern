@@ -40,12 +40,14 @@ class OSSImageService
 
         $fullUrl = $this->getFullUrl($fullPath);
         $mimeType = $image->getMimeType();
+        $diskType = "oss";
         $size = $image->getSize();
 
         return [
             'file_name' => $fileName,
             'full_url' => $fullUrl,
             'mime_type' => $mimeType,
+            'disk_type' => $diskType,
             'size' => $size,
         ];
     }

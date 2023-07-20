@@ -25,7 +25,7 @@ class StoreImageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => 'nullable|file|mimes:png,jpg'
+            'image' => 'required|file'
         ];
     }
 
@@ -43,7 +43,7 @@ class StoreImageRequest extends FormRequest
         }
 
         throw new HttpResponseException(response()->json([
-            'message' => 'Failed to create new image.',
+            'message' => 'Failed to create new post.',
             'errors' => $errors,
             'status' => false
         ], Response::HTTP_UNPROCESSABLE_ENTITY));

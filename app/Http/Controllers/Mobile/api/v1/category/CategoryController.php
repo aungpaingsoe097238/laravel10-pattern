@@ -21,7 +21,7 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index() : CategoryCollection
     {
         $categories = $this->categoryRepository->getAll();
         return new CategoryCollection($categories);
@@ -30,7 +30,7 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Category $category)
+    public function show(Category $category) : CategoryResource
     {
         $category = $this->categoryRepository->get($category);
         return new CategoryResource($category->load('posts'));

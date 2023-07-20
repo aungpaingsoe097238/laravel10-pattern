@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('full_url');
             $table->unsignedBigInteger('size');
             $table->string('mime_type');
+            $table->string('disk_type');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });

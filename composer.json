@@ -12,7 +12,7 @@
         "aliyuncs/oss-sdk-php": "^2.6",
         "flipbox/lumen-generator": "^9.2",
         "flugger/laravel-responder": "^3.3",
-        "guzzlehttp/guzzle": "^7.2",
+        "guzzlehttp/guzzle": "^7.7",
         "laravel/framework": "^10.10",
         "laravel/passport": "^11.8",
         "laravel/sanctum": "^3.2",

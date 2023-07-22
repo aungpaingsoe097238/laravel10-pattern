@@ -37,7 +37,11 @@ class PermissionSeeder extends Seeder
             'image-list',
             'image-create',
             'image-edit',
-            'image-delete'
+            'image-delete',
+            'video-list',
+            'video-create',
+            'video-edit',
+            'video-delete',
         ];
 
         foreach ($permissions as $permission) {

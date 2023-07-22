@@ -18,6 +18,10 @@ class PostRepository extends BaseRepository
         parent::__construct($post);
     }
 
+    /**
+     *  Create New Post
+     *  @param Post
+     */
     public function createPost($data) : Post
     {
         // Upload new image to OSS cloud
@@ -29,6 +33,10 @@ class PostRepository extends BaseRepository
         return $post;
     }
 
+    /**
+     *  Post Image Update
+     *  @param Post
+     */
     public function updateImage($id, $data): Post
     {
         $post = Post::findOrFail($id);

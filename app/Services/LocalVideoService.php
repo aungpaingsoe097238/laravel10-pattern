@@ -2,22 +2,22 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
-class LocalImageService
+class LocalVideoService
 {
     /**
-     * Public Disk Image Uploaded
+     * Public Disk Video Uploaded
      */
-    public function uploadImage($image, $path = 'uploads/images', $fileName = null)
+    public function uploadVideo($video, $path = 'uploads/videos', $fileName = null)
     {
-        $fileName = $fileName ?: Str::random(20) . '.' . $image->getClientOriginalExtension();
-        $image->storeAs('public/' . $path, $fileName);
+        $fileName = $fileName ?: Str::random(20) . '.' . $video->getClientOriginalExtension();
+        $video->storeAs('public/' . $path, $fileName);
         $fullUrl = $this->getFullUrl($path . '/' . $fileName);
-        $mimeType = $image->getClientMimeType();
+        $mimeType = $video->getClientMimeType();
         $diskType = "local";
-        $size = $image->getSize();
+        $size = $video->getSize();
 
         return [
             'file_name' => $fileName,
@@ -29,11 +29,11 @@ class LocalImageService
     }
 
     /**
-     * Public Disk Image Deleted
+     * Public Disk Video Deleted
      */
-    public function deleteImage($imageUrl)
+    public function deleteVideo($videoUrl)
     {
-        $path = $this->getPathFromUrl($imageUrl);
+        $path = $this->getPathFromUrl($videoUrl);
         if ($path) {
             $fileExists = Storage::disk('public')->exists($path);
 

@@ -23,9 +23,8 @@ class OSSImageService
     /**
      * OSS Image Uploaded
      */
-    public function uploadImage($image, $path = 'uploads', $fileName = null, $acl = null)
+    public function uploadImage($image, $path = 'uploads/images', $fileName = null, $acl = null)
     {
-
         if (!$fileName) {
             $fileName = time() . '_' . $image->getClientOriginalName();
         }
@@ -64,11 +63,12 @@ class OSSImageService
 
     private function getFullUrl($path)
     {
-        return env('OSS_URL') . '/' . $path;
+        // Construct the full URL using the endpoint and bucket
+        return "https://{$this->bucket}.{$this->endpoint}/$path";
     }
 
     private function getPathFromUrl($url)
     {
-        return str_replace(env('OSS_URL') . '/', '', $url);
+        return str_replace("https://{$this->bucket}.{$this->endpoint}/", '', $url);
     }
 }

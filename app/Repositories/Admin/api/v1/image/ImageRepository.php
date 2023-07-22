@@ -53,7 +53,7 @@ class ImageRepository extends BaseRepository
     /**
      *  Delete Local Image
      */
-    public function deleteLocalImage(Image $image): void
+    public function deleteLocalImage(Image $image) : void
     {
         $data = $this->localImageService->deleteImage($image['full_url']);
         if ($data) {

@@ -62,9 +62,9 @@ class Handler extends ExceptionHandler
         // if ($e instanceof BadMethodCallException) {
         //     return response()->json(['status' => false, 'message' => 'Method not found or invalid method call.'], Response::HTTP_BAD_REQUEST);
         // }
-        if ($e instanceof OssException) {
-            return response()->json(['status' => false, 'message' => 'Image upload failed. Please try again later..'], Response::HTTP_BAD_REQUEST);
-        }
+        // if ($e instanceof OssException) {
+        //     return response()->json(['status' => false, 'message' => 'Image upload failed. Please try again later..'], Response::HTTP_BAD_REQUEST);
+        // }
         if ($e instanceof MethodNotAllowedHttpException) {
             $method = $request->getMethod();
             $message = sprintf('%s method not allowed', $method);

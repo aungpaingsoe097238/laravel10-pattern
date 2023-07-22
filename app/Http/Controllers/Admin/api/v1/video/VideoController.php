@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Admin\api\v1\video;
 
+use OSS\OssClient;
 use App\Models\Video;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Admin\api\v1\video\VideoCollection;
 use App\Http\Resources\Admin\api\v1\video\VideoResource;
 use App\Repositories\Admin\api\v1\video\VideoRepository;
+use App\Http\Resources\Admin\api\v1\video\VideoCollection;
 
 class VideoController extends Controller
 {

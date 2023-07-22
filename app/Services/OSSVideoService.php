@@ -6,33 +6,28 @@ use OSS\OssClient;
 
 class OSSVideoService
 {
-    public function uploadVideo($video)
+    /**
+     *  OSS Video Uploaded
+     */
+    public function uploadVideo($video, $path = 'uploads/videos', $fileName = null)
     {
-        $accessKeyId = 'LTAI5tSZWuqQrCkACVCkdhug';
-        $accessKeySecret = '5IIQ44umnRIq2aK4MDsvkRemDKRbmf';
-        $bucket = 'coursia-demo-video';
-        $endpoint = 'oss-ap-southeast-1.aliyuncs.com';
+    }
 
-        $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
+    /**
+     *  OSS Video Deleted
+     */
+    public function deleteVideo($videoUrl)
+    {
+        //
+    }
 
-        $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
+    private function getFullUrl($path)
+    {
+        //
+    }
 
-        $currentDate = now()->toDateString();
-        $unique_file_name = date("Y") . date("m") . date("d") . "-" . substr(number_format(time() * mt_rand(), 0, '', ''), 0, 10) . "-" . $video->getClientOriginalName();
-
-        $object = 'public/videos/' . $currentDate . '/' . $unique_file_name;
-
-        $ali_response = $ossClient->uploadFile($bucket, $object, $video->getPathname());
-
-        $result = [];
-        $result['video_url'] = $ali_response['info']['url'];
-        $result['file_size'] = $ali_response['info']['size_upload'];
-        $result['original_filename'] = $video->getClientOriginalName();
-
-        return response()->json([
-            'message' => 'success',
-            'status'  => true,
-            'result'  => $result
-        ]);
+    private function getPathFromUrl($url)
+    {
+        //
     }
 }

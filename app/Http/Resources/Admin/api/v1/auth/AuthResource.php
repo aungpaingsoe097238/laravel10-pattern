@@ -2,10 +2,11 @@
 
 namespace App\Http\Resources\Admin\api\v1\auth;
 
-use App\Http\Resources\Admin\api\v1\role\RoleCollection;
+use App\Utlis\Json;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Admin\api\v1\role\RoleCollection;
 
 class AuthResource extends JsonResource
 {

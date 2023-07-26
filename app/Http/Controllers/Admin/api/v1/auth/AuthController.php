@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Admin\api\v1\auth\LoginRequest;
 use App\Http\Resources\Admin\api\v1\auth\AuthResource;
+use App\Utlis\Json;
 
 class AuthController extends Controller
 {
@@ -17,7 +18,7 @@ class AuthController extends Controller
             $user['token'] = $user->createToken('laravel10')->accessToken;
             return new AuthResource($user->load('roles'));
         }
-        return response()->json(['message' => 'Unauthorized.', 'status' => false], Response::HTTP_UNAUTHORIZED);
+        return Json::error('Invalid Credentials.', Response::HTTP_UNAUTHORIZED);
     }
 
     public function logout()
@@ -26,5 +27,4 @@ class AuthController extends Controller
         $user->revoke();
         return new AuthResource($user);
     }
-
 }

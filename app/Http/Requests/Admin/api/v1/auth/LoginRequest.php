@@ -45,7 +45,7 @@ class LoginRequest extends FormRequest
         }
 
         throw new HttpResponseException(response()->json([
-            'message' => 'Unauthorized.',
+            'message' => 'Invalid Credentials.',
             'errors' => $errors,
             'status' => false
         ], Response::HTTP_UNAUTHORIZED));

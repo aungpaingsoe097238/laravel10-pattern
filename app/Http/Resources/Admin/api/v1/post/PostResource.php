@@ -2,11 +2,12 @@
 
 namespace App\Http\Resources\Admin\api\v1\post;
 
+use App\Utlis\Json;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\Admin\api\v1\category\CategoryResource;
 use App\Http\Resources\Admin\api\v1\image\ImageResource;
+use App\Http\Resources\Admin\api\v1\category\CategoryResource;
 
 class PostResource extends JsonResource
 {
@@ -41,16 +42,17 @@ class PostResource extends JsonResource
      */
     public function with($request)
     {
-        $routeName = Route::currentRouteName();
-        return [
-            'message' => match ($routeName) {
-                'posts.store' => 'Post create successfully',
-                'posts.show' => 'Post details retrieved successfully',
-                'posts.update' => 'Post updated successfully',
-                'posts.destroy' => 'Post deleted successfully',
-                default => 'Unknown route',
-            },
-            'status' => in_array($routeName, ['posts.store', 'posts.show', 'posts.update', 'posts.destroy']),
-        ];
+        return Json::resource($request);
+        // $routeName = Route::currentRouteName();
+        // return [
+        //     'message' => match ($routeName) {
+        //         'posts.store' => 'Post create successfully',
+        //         'posts.show' => 'Post details retrieved successfully',
+        //         'posts.update' => 'Post updated successfully',
+        //         'posts.destroy' => 'Post deleted successfully',
+        //         default => 'Unknown route',
+        //     },
+        //     'status' => in_array($routeName, ['posts.store', 'posts.show', 'posts.update', 'posts.destroy']),
+        // ];
     }
 }

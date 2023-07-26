@@ -17,7 +17,6 @@ class PostController extends Controller
     {
         $this->postRepository = $postRepository;
         $this->with = ['category'];
-        $this->middleware('permission:post-list|post-create|post-edit|post-delete', ['except' => ['index', 'show']]);
     }
 
     /**

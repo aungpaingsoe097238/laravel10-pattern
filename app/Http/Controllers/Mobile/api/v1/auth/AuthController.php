@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Mobile\api\v1\auth;
 
+use App\Utlis\Json;
 use App\Models\User;
+use App\Mail\OtpVerifyEmail;
 use Illuminate\Http\Response;
 use App\Models\OneTimePassword;
 use Spatie\Permission\Models\Role;
@@ -19,7 +21,6 @@ use App\Http\Requests\Mobile\api\v1\auth\ChangePasswordRequest;
 use App\Http\Requests\Mobile\api\v1\auth\forgotPassword\ForgotPasswordRequestOtpRequest;
 use App\Http\Requests\Mobile\api\v1\auth\forgotPassword\ForgotPasswordChangePasswordRequest;
 use App\Http\Requests\Mobile\api\v1\auth\forgotPassword\ForgotPasswordVerifyPasswordRequest;
-use App\Mail\OtpVerifyEmail;
 
 class AuthController extends Controller
 {
@@ -29,7 +30,6 @@ class AuthController extends Controller
     {
         $this->with = ['roles'];
     }
-
 
     public function requestOtp(RequestOtpRequest $request)
     {
@@ -44,10 +44,7 @@ class AuthController extends Controller
         // Send otp to verify email
         Mail::to($oneTimePassword['email'])->send(new OtpVerifyEmail($oneTimePassword['code']));
 
-        return response()->json([
-            'message' => 'OTP is send to your email.Please verify.',
-            'status'  => false
-        ]);
+        return Json::error('OTP was send to your email.Please verify.');
     }
 
     public function verfiyOtp(VerifyOtpRequest $request)
@@ -57,19 +54,15 @@ class AuthController extends Controller
             ->first();
 
         if (!$otp) {
-            return response()->json([
-                'message' => 'Invalid OTP.',
-                'status'  => false
-            ], Response::HTTP_BAD_REQUEST);
+            return Json::error('Invalid OTP.');
         }
 
         $otp->status = true;
         $otp->save();
 
-        return response()->json([
-            'message' => 'Valid OTP.',
-            'status'  => true
-        ]);
+        return Json::error(
+            'Valid OTP.'
+        );
     }
 
     public function register(RegisterRequest $request)
@@ -79,10 +72,7 @@ class AuthController extends Controller
             ->where('status', true)->first();
 
         if (!$oneTimePassword) {
-            return response()->json([
-                'message' => 'Please verify your email address.',
-                'status'  => false
-            ], 400);
+            return Json::error('Please verify your email address.');
         }
 
         $user = User::create($request->validated() + [
@@ -93,7 +83,8 @@ class AuthController extends Controller
             'user_id' => $user->id
         ]);
 
-        $role = Role::findOrFail(2); // Change your role id
+        // Change your role id
+        $role = Role::findOrFail(2);
         $user->assignRole($role);
         return new AuthResource($user->load($this->with));
     }
@@ -105,7 +96,10 @@ class AuthController extends Controller
             $user['token'] = $user->createToken('laravel10')->accessToken;
             return new AuthResource($user->load($this->with));
         }
-        return response()->json(['message' => 'Unauthorized.', 'status' => false], Response::HTTP_UNAUTHORIZED);
+        return Json::error(
+            'Invalid Credentials',
+            Response::HTTP_UNAUTHORIZED
+        );
     }
 
     public function logout()
@@ -119,7 +113,7 @@ class AuthController extends Controller
     {
         $user = Auth::user();
         if (!Hash::check($request->current_password, $user->password)) {
-            return response()->json(['message' => 'The current password is incorrect.', 'status' => false], Response::HTTP_BAD_REQUEST);
+            return Json::error('The current password is incorrect.');
         }
         $user->password = Hash::make($request->new_password);
         $user->save();
@@ -132,10 +126,7 @@ class AuthController extends Controller
             ->where('status', true)->first();
 
         if (!$oneTimePassword) {
-            return response()->json([
-                'message' => 'Email not found.Please registation first.',
-                'status'  => false
-            ], Response::HTTP_NOT_FOUND);
+            return Json::error('Email not found.Please registation first.',Response::HTTP_NOT_FOUND);
         }
 
         $oneTimePassword->update([
@@ -145,10 +136,7 @@ class AuthController extends Controller
         // Send otp to verify email
         Mail::to($oneTimePassword['email'])->send(new OtpVerifyEmail($oneTimePassword['code']));
 
-        return response()->json([
-            'message' => 'OTP is send to your email.Please verify.',
-            'status'  => true
-        ]);
+        return Json::error('OTP is send to your email.Please verify.');
     }
 
     public function forgotPasswordVerify(ForgotPasswordVerifyPasswordRequest $request)
@@ -156,16 +144,10 @@ class AuthController extends Controller
         $otp = OneTimePassword::where('code', $request->code)->first();
 
         if (!$otp) {
-            return response()->json([
-                'message' => 'Invalid OTP.',
-                'status'  => false
-            ]);
+            return Json::error('Invalid OTP.');
         }
 
-        return response()->json([
-            'message' => 'Valid OTP.',
-            'status'  => true
-        ]);
+        return Json::error('Valid OTP.');
     }
 
     public function forgotPasswordChangePassword(ForgotPasswordChangePasswordRequest $request)
@@ -175,10 +157,7 @@ class AuthController extends Controller
             ->first();
 
         if (!$oneTimePassword) {
-            return response()->json([
-                'message' => 'Please verify your email address.',
-                'status'  => false
-            ]);
+            return Json::error('Please verify your email address.');
         }
 
         $user = $oneTimePassword->user;

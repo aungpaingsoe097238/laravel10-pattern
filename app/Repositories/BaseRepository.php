@@ -12,6 +12,9 @@ class BaseRepository implements BaseRepositoryInterface
         $this->model = $model;
     }
 
+    /**
+     * Display a listing of the resource.
+     */
     public function getAll()
     {
         $results = $this->model;
@@ -26,24 +29,36 @@ class BaseRepository implements BaseRepositoryInterface
         return $results;
     }
 
-    public function get(Model $model) : Model
+    /**
+     * Display the specified resource.
+     */
+    public function get(Model $model): Model
     {
         return $model;
     }
 
-    public function create(array $data) : Model
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function create(array $data): Model
     {
         $model = $this->model->create($data);
         return $model;
     }
 
-    public function update(Model $model, array $data) : Model
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Model $model, array $data): Model
     {
         $model->update($data);
         return $model;
     }
 
-    public function delete(Model $model) : void
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function delete(Model $model): void
     {
         $model->delete();
     }

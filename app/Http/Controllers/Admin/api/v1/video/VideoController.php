@@ -29,7 +29,7 @@ class VideoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): VideoCollection
     {
         $videos = $this->videoRepository->getAll();
         return new VideoCollection($videos->load($this->with));
@@ -38,7 +38,7 @@ class VideoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): VideoResource
     {
         $video = $this->videoRepository->uploadLocalVideo($request);
         return new VideoResource($video->load($this->with));
@@ -47,7 +47,7 @@ class VideoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Video $video)
+    public function show(Video $video): VideoResource
     {
         $video = $this->videoRepository->get($video);
         return new VideoResource($video->load($this->with));
@@ -56,7 +56,7 @@ class VideoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Video $video)
+    public function destroy(Video $video): VideoResource
     {
         $video = $this->videoRepository->deleteLocalVideo($video);
         return new VideoResource($video);

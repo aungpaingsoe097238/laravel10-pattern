@@ -84,7 +84,7 @@ class UserController extends Controller
     /**
      * Removes a resource from storage
      */
-    public function userReturnReject($id)
+    public function userReturnReject($id): UserResource
     {
         $user = $this->userRepository->userReturnReject($id);
         return new UserResource($user);

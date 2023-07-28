@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Admin\api\v1\permission;
 
+use App\Utlis\Json;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -25,9 +26,6 @@ class PermissionCollection extends ResourceCollection
      */
     public function with($request)
     {
-        return [
-            'message' => 'Permission list successfully.',
-            'status' => true,
-        ];
+        return Json::resource($request);
     }
 }

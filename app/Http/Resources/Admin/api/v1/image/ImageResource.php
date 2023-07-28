@@ -2,10 +2,11 @@
 
 namespace App\Http\Resources\Admin\api\v1\image;
 
-use App\Http\Resources\Admin\api\v1\user\UserResource;
+use App\Utlis\Json;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Admin\api\v1\user\UserResource;
 
 class ImageResource extends JsonResource
 {
@@ -38,16 +39,6 @@ class ImageResource extends JsonResource
      */
     public function with($request)
     {
-        $routeName = Route::currentRouteName();
-        return [
-            'message' => match ($routeName) {
-                'images.store' => 'Image create successfully',
-                'images.show' => 'Image details retrieved successfully',
-                'images.update' => 'Image updated successfully',
-                'images.destroy' => 'Image deleted successfully',
-                default => 'Unknown route',
-            },
-            'status' => in_array($routeName, ['images.store', 'images.show', 'images.update', 'images.destroy']),
-        ];
+        return Json::resource($request);
     }
 }

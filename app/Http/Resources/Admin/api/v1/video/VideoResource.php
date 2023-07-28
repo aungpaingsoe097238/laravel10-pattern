@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Admin\api\v1\video;
 
+use App\Utlis\Json;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -38,16 +39,6 @@ class VideoResource extends JsonResource
      */
     public function with($request)
     {
-        $routeName = Route::currentRouteName();
-        return [
-            'message' => match ($routeName) {
-                'videos.store' => 'Videos create successfully',
-                'videos.show' => 'Videos details retrieved successfully',
-                'videos.update' => 'Videos updated successfully',
-                'videos.destroy' => 'Videos deleted successfully',
-                default => 'Unknown route',
-            },
-            'status' => in_array($routeName, ['videos.store', 'videos.show', 'videos.update', 'videos.destroy']),
-        ];
+        return Json::resource($request);
     }
 }

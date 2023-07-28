@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Mobile\api\v1\category;
 
+use App\Utlis\Json;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -25,9 +26,6 @@ class CategoryCollection extends ResourceCollection
      */
     public function with($request)
     {
-        return [
-            'message' => 'Category list successfully',
-            'status' => true
-        ];
+        return Json::resource($request);
     }
 }

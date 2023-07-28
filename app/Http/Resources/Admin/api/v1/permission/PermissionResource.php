@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Admin\api\v1\permission;
 
+use App\Utlis\Json;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -34,16 +35,6 @@ class PermissionResource extends JsonResource
      */
     public function with($request)
     {
-        $routeName = Route::currentRouteName();
-        return [
-            'message' => match ($routeName) {
-                'permissions.store' => 'Permission create successfully',
-                'permissions.show' => 'Permission details retrieved successfully',
-                'permissions.update' => 'Permission updated successfully',
-                'permissions.destroy' => 'Permission deleted successfully',
-                default => 'Unknown route',
-            },
-            'status' => in_array($routeName, ['permissions.store', 'permissions.show', 'permissions.update', 'permissions.destroy']),
-        ];
+        return Json::resource($request);
     }
 }

@@ -43,16 +43,5 @@ class PostResource extends JsonResource
     public function with($request)
     {
         return Json::resource($request);
-        // $routeName = Route::currentRouteName();
-        // return [
-        //     'message' => match ($routeName) {
-        //         'posts.store' => 'Post create successfully',
-        //         'posts.show' => 'Post details retrieved successfully',
-        //         'posts.update' => 'Post updated successfully',
-        //         'posts.destroy' => 'Post deleted successfully',
-        //         default => 'Unknown route',
-        //     },
-        //     'status' => in_array($routeName, ['posts.store', 'posts.show', 'posts.update', 'posts.destroy']),
-        // ];
     }
 }

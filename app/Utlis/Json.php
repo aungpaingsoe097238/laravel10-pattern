@@ -37,15 +37,17 @@ class Json
     public static function resource($request)
     {
         $routeName = Route::currentRouteName();
+        $uri = substr($routeName, 0, strpos($routeName, '.')); // Slice current route uri (eg:posts)
         return [
             'message' => match ($routeName) {
-                'posts.store' => 'Post create successfully',
-                'posts.show' => 'Post details retrieved successfully',
-                'posts.update' => 'Post updated successfully',
-                'posts.destroy' => 'Post deleted successfully',
+                $uri . '.index' => $uri . ' list successfully.',
+                $uri . '.store' => $uri . ' create successfully.',
+                $uri . '.show' => $uri . ' details retrieved successfully.',
+                $uri . '.update' => $uri . ' updated successfully.',
+                $uri . '.destroy' => $uri . ' deleted successfully.',
                 default => 'Unknown route',
             },
-            'status' => in_array($routeName, ['posts.store', 'posts.show', 'posts.update', 'posts.destroy']),
+            'status' => in_array($routeName, [$uri . '.index', $uri . '.store', $uri . '.show', $uri . '.update', $uri . '.destroy']),
         ];
     }
 }

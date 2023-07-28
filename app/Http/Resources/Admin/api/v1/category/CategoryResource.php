@@ -2,10 +2,11 @@
 
 namespace App\Http\Resources\Admin\api\v1\category;
 
-use App\Http\Resources\Admin\api\v1\post\PostCollection;
+use App\Utlis\Json;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Admin\api\v1\post\PostCollection;
 
 class CategoryResource extends JsonResource
 {
@@ -35,16 +36,6 @@ class CategoryResource extends JsonResource
      */
     public function with($request)
     {
-        $routeName = Route::currentRouteName();
-        return [
-            'message' => match ($routeName) {
-                'categories.store' => 'Category create successfully',
-                'categories.show' => 'Category details retrieved successfully',
-                'categories.update' => 'Category updated successfully',
-                'categories.destroy' => 'Category deleted successfully',
-                default => 'Unknown route',
-            },
-            'status' => in_array($routeName, ['categories.store', 'categories.show', 'categories.update', 'categories.destroy']),
-        ];
+        return Json::resource($request);
     }
 }

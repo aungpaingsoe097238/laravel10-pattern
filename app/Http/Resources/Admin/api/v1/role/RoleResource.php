@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Admin\api\v1\role;
 
+use App\Utlis\Json;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -36,16 +37,6 @@ class RoleResource extends JsonResource
      */
     public function with($request)
     {
-        $routeName = Route::currentRouteName();
-        return [
-            'message' => match ($routeName) {
-                'roles.store' => 'Role create successfully',
-                'roles.show' => 'Role details retrieved successfully',
-                'roles.update' => 'Role updated successfully',
-                'roles.destroy' => 'Role deleted successfully',
-                default => 'Unknown route',
-            },
-            'status' => in_array($routeName, ['roles.store', 'roles.show', 'roles.update', 'roles.destroy']),
-        ];
+        return Json::resource($request);
     }
 }

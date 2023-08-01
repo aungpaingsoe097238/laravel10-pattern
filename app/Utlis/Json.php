@@ -32,6 +32,18 @@ class Json
     }
 
     /**
+     * Return only message
+     */
+    public static function message($message = null, $statusCode = Response::HTTP_OK): JsonResponse
+    {
+        return response()->json([
+            'message' => $message,
+            'status'  => true
+        ], $statusCode);
+    }
+
+
+    /**
      *  Return response from resource
      */
     public static function resource($request)

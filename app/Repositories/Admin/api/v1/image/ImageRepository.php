@@ -2,11 +2,11 @@
 
 namespace App\Repositories\Admin\api\v1\image;
 
-use App\Models\Image;
-use App\Services\OSSImageService;
-use App\Repositories\BaseRepository;
-use App\Services\LocalImageService;
 use Auth;
+use App\Models\Image;
+use App\Repositories\BaseRepository;
+use App\Services\ImageService\OSSImageService;
+use App\Services\ImageService\LocalImageService;
 
 class ImageRepository extends BaseRepository
 {
@@ -43,7 +43,7 @@ class ImageRepository extends BaseRepository
     /**
      *  Upload Local Image
      */
-    public function uploadLocalImage($data) : Image
+    public function uploadLocalImage($data): Image
     {
         $imageData = $this->localImageService->uploadImage($data['image']);
         $image = Image::create($imageData + ['user_id' => Auth::user()->id]);
@@ -53,7 +53,7 @@ class ImageRepository extends BaseRepository
     /**
      *  Delete Local Image
      */
-    public function deleteLocalImage(Image $image) : void
+    public function deleteLocalImage(Image $image): void
     {
         $data = $this->localImageService->deleteImage($image['full_url']);
         if ($data) {

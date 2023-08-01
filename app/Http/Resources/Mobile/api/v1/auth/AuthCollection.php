@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Mobile\api\v1\auth;
 
+use App\Utlis\Json;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -25,9 +26,6 @@ class AuthCollection extends ResourceCollection
      */
     public function with($request)
     {
-        return [
-            'message' => 'successfully',
-            'status' => true
-        ];
+        return Json::resource($request);
     }
 }

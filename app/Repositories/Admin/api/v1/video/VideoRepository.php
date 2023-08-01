@@ -3,42 +3,19 @@
 namespace App\Repositories\Admin\api\v1\video;
 
 use App\Models\Video;
-use App\Services\LocalVideoService;
 use App\Repositories\BaseRepository;
-use App\Services\OSSVideoService;
 use Illuminate\Support\Facades\Auth;
+use App\Services\VideoService\OSSVideoService;
+use App\Services\VideoService\LocalVideoService;
 
 class VideoRepository extends BaseRepository
 {
     protected $localVideoSerrvice, $ossVideoService;
 
-    public function __construct(Video $video, LocalVideoService $localVideoService, OSSVideoService $ossVideoService )
+    public function __construct(Video $video, LocalVideoService $localVideoService )
     {
         parent::__construct($video);
         $this->localVideoSerrvice = $localVideoService;
-        $this->ossVideoService = $ossVideoService;
-    }
-
-    /**
-     *  Upload OSS Video
-     */
-    public function uploadOssVideo($video)
-    {
-        $videoData = $this->ossVideoService->uploadVideo($video['video']);
-        return $videoData;
-        $video = Video::create($videoData + ['user_id' => Auth::user()->id]);
-        return $video;
-    }
-
-    /**
-     *  Delete OSS Video
-     */
-    public function deleteOssVideo(Video $video)
-    {
-        // $videoData = $this->ossVideoService->deleteVideo($video['full_url']);
-        // if($videoData){
-        //     $video->delete();
-        // }
     }
 
     /**

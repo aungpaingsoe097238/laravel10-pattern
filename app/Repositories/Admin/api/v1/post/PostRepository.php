@@ -4,7 +4,7 @@ namespace App\Repositories\Admin\api\v1\post;
 
 use App\Models\Post;
 use App\Models\Image;
-use App\Services\OSSImageService;
+use App\Services\ImageService\OSSImageService;
 use App\Repositories\BaseRepository;
 use Auth;
 

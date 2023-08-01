@@ -11,6 +11,9 @@ use App\Utlis\Json;
 
 class AuthController extends Controller
 {
+    /**
+     * User Login
+     */
     public function login(LoginRequest $request)
     {
         if (Auth::attempt($request->validated())) {
@@ -21,6 +24,9 @@ class AuthController extends Controller
         return Json::error('Invalid Credentials.', Response::HTTP_UNAUTHORIZED);
     }
 
+    /**
+     * User Logout
+     */
     public function logout()
     {
         $user = Auth::user()->token();

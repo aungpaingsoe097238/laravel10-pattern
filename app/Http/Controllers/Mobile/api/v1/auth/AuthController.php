@@ -31,6 +31,9 @@ class AuthController extends Controller
         $this->with = ['roles'];
     }
 
+    /**
+     * Request OTP
+     */
     public function requestOtp(RequestOtpRequest $request)
     {
         $data = [
@@ -44,9 +47,12 @@ class AuthController extends Controller
         // Send otp to verify email
         Mail::to($oneTimePassword['email'])->send(new OtpVerifyEmail($oneTimePassword['code']));
 
-        return Json::error('OTP was send to your email.Please verify.');
+        return Json::message('OTP was send to your email.Please verify.');
     }
 
+    /**
+     * Verify OTP
+     */
     public function verfiyOtp(VerifyOtpRequest $request)
     {
         $otp = OneTimePassword::where('status', false)
@@ -65,6 +71,9 @@ class AuthController extends Controller
         );
     }
 
+    /**
+     * User Registation
+     */
     public function register(RegisterRequest $request)
     {
         // Check OTP is verify
@@ -89,6 +98,9 @@ class AuthController extends Controller
         return new AuthResource($user->load($this->with));
     }
 
+    /**
+     * User Login
+     */
     public function login(LoginRequest $request)
     {
         if (Auth::attempt($request->validated())) {
@@ -102,6 +114,9 @@ class AuthController extends Controller
         );
     }
 
+    /**
+     * User Logout
+     */
     public function logout()
     {
         $user = Auth::user()->token();
@@ -109,6 +124,9 @@ class AuthController extends Controller
         return new AuthResource($user);
     }
 
+    /**
+     * Change User Password
+     */
     public function changePassword(ChangePasswordRequest $request)
     {
         $user = Auth::user();
@@ -120,6 +138,9 @@ class AuthController extends Controller
         return new AuthResource($user);
     }
 
+    /**
+     * Forgot Password Request OTP 
+     */
     public function forgotPasswordRequestOtp(ForgotPasswordRequestOtpRequest $request)
     {
         $oneTimePassword = OneTimePassword::where('email', $request->email)
@@ -139,6 +160,9 @@ class AuthController extends Controller
         return Json::error('OTP is send to your email.Please verify.');
     }
 
+    /**
+     * Forgot Password Verify OTP
+     */
     public function forgotPasswordVerify(ForgotPasswordVerifyPasswordRequest $request)
     {
         $otp = OneTimePassword::where('code', $request->code)->first();
@@ -150,6 +174,9 @@ class AuthController extends Controller
         return Json::error('Valid OTP.');
     }
 
+    /**
+     * Forgot Password Change Password 
+     */
     public function forgotPasswordChangePassword(ForgotPasswordChangePasswordRequest $request)
     {
         $oneTimePassword = OneTimePassword::where('code', $request->code)

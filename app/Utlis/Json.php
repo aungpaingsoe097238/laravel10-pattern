@@ -34,11 +34,11 @@ class Json
     /**
      * Return only message
      */
-    public static function message($message = null, $statusCode = Response::HTTP_OK): JsonResponse
+    public static function message($message = null, $status = true, $statusCode = Response::HTTP_OK): JsonResponse
     {
         return response()->json([
             'message' => $message,
-            'status'  => true
+            'status'  => $status
         ], $statusCode);
     }
 

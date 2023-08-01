@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('code');
             $table->boolean('status')->default(true);
             $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->timestamp('expiration_date')->nullable();
             $table->timestamps();
         });
     }

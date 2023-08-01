@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Mobile\api\v1\auth;
 
+use Carbon\Carbon;
 use App\Utlis\Json;
 use App\Models\User;
 use App\Mail\OtpVerifyEmail;
@@ -40,6 +41,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'status' => false,
             'code' => rand(1000, 9999),
+            'expiration_date' => Carbon::now()
         ];
 
         $oneTimePassword = OneTimePassword::updateOrCreate(['email' => $request->email], $data);
@@ -55,20 +57,21 @@ class AuthController extends Controller
      */
     public function verfiyOtp(VerifyOtpRequest $request)
     {
-        $otp = OneTimePassword::where('status', false)
-            ->where('code', $request->code)
-            ->first();
+        $otp = OneTimePassword::where('code', $request->code)->first();
 
         if (!$otp) {
-            return Json::error('Invalid OTP.');
+            return Json::message('Invalid OTP.', false);
         }
 
-        $otp->status = true;
-        $otp->save();
+        if ($otp->status) {
+            $otp->delete();
+            return Json::message('Invalid OTP.', false);
+        }
 
-        return Json::error(
-            'Valid OTP.'
-        );
+        $otp->update([
+            'status' => true
+        ]);
+        return Json::message('Valid OTP.');
     }
 
     /**
@@ -147,7 +150,7 @@ class AuthController extends Controller
             ->where('status', true)->first();
 
         if (!$oneTimePassword) {
-            return Json::error('Email not found.Please registation first.',Response::HTTP_NOT_FOUND);
+            return Json::error('Email not found.Please registation first.', Response::HTTP_NOT_FOUND);
         }
 
         $oneTimePassword->update([

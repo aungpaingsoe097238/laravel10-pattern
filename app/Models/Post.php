@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Post extends Model
 {
@@ -15,16 +16,25 @@ class Post extends Model
 
     protected $fillable = ['title', 'category_id', 'description', 'image_id'];
 
+    /**
+     * Get the category
+     */
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    public function image(): BelongsTo
+    /**
+     * Get the post's image.
+     */
+    public function images(): MorphMany
     {
-        return $this->belongsTo(Image::class);
+        return $this->morphMany(Image::class, 'imageable');
     }
 
+    /**
+     * Filter 
+     */
     public function scopeFilter($query)
     {
         $search = request()->input('search');

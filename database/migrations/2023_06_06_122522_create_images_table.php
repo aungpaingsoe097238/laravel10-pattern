@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('mime_type');
             $table->string('disk_type');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('imageable_id');
+            $table->string('imageable_type');
             $table->timestamps();
         });
     }

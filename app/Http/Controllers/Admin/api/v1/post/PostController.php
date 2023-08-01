@@ -18,7 +18,7 @@ class PostController extends Controller
 
     function __construct(PostRepository $postRepository)
     {
-        $this->with = ['category', 'image'];
+        $this->with = ['category', 'images'];
         $this->postRepository = $postRepository;
         $this->middleware('permission:post-list', ['only' => ['index', 'show']]);
         $this->middleware('permission:post-create', ['only' => ['create', 'store']]);
@@ -29,7 +29,7 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() : PostCollection
+    public function index(): PostCollection
     {
         $posts = $this->postRepository->getAll();
         return new PostCollection($posts->load($this->with));
@@ -38,7 +38,7 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePostRequest $request) : PostResource
+    public function store(StorePostRequest $request): PostResource
     {
         $post = $this->postRepository->createPost($request->validated());
         return new PostResource($post->load($this->with));
@@ -47,7 +47,7 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Post $post) : PostResource
+    public function show(Post $post): PostResource
     {
         $post = $this->postRepository->get($post);
         return new PostResource($post->load($this->with));
@@ -74,7 +74,7 @@ class PostController extends Controller
     /**
      * Update Image
      */
-    public function updateImage(UpdateImageRequest $request, $id) : PostResource
+    public function updateImage(UpdateImageRequest $request, $id)
     {
         $post = $this->postRepository->updateImage($id, $request->validated());
         return new PostResource($post->load($this->with));

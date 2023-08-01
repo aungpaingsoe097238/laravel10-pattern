@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Post;
+use App\Observers\PostObserver;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
@@ -21,7 +23,9 @@ class AppServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      */
     public function boot(): void
-    {
+    {   
+        Post::observe(PostObserver::class);
+        
         Validator::extend('image64', function ($attribute, $value, $parameters, $validator) {
             $decodedImage = base64_decode($value);
             $f = finfo_open();

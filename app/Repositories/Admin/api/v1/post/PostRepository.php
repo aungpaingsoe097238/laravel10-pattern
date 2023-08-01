@@ -4,17 +4,17 @@ namespace App\Repositories\Admin\api\v1\post;
 
 use App\Models\Post;
 use App\Models\Image;
-use App\Services\ImageService\OSSImageService;
 use App\Repositories\BaseRepository;
+use App\Services\ImageService\LocalImageService;
 use Auth;
 
 class PostRepository extends BaseRepository
 {
-    protected $ossImageService;
+    protected $localImageService;
 
-    public function __construct(Post $post, OSSImageService $ossImageService)
+    public function __construct(Post $post, LocalImageService $localImageService)
     {
-        $this->ossImageService = $ossImageService;
+        $this->localImageService = $localImageService;
         parent::__construct($post);
     }
 
@@ -24,12 +24,11 @@ class PostRepository extends BaseRepository
      */
     public function createPost($data) : Post
     {
-        // Upload new image to OSS cloud
-        $image = $this->ossImageService->uploadImage($data['image']);
-        // Create new image
-        $imageData = Image::create($image + ['user_id' => Auth::user()->id]);
+        // Upload new image
+        $image = $this->localImageService->uploadImage($data['image']);
         // Create new post
-        $post = Post::create($data + ['image_id' => $imageData->id]);
+        $post = Post::create($data);
+        $post->images()->create($image + ['user_id' => Auth::user()->id]);
         return $post;
     }
 
@@ -42,16 +41,13 @@ class PostRepository extends BaseRepository
         $post = Post::findOrFail($id);
         // Check if the post has an existing image
         if ($post->image) {
-            // Delete old image from OSS cloud
-            $this->ossImageService->deleteImage($post->image->full_url);
+            // Delete old image
+            $this->localImageService->deleteImage($post->image->full_url);
         }
-        // Upload new image to OSS cloud
-        $imageData = $this->ossImageService->uploadImage($data['image']);
+        // Upload new image
+        $imageData = $this->localImageService->uploadImage($data['image']);
         // Create or update the image associated with the post
-        $image = $post->image()->updateOrCreate([], $imageData + ['user_id' => Auth::id()]);
-        // Update image_id to the current post
-        $post->update(['image_id' => $image->id]);
-        // Return the updated post instance
+        $post->images()->updateOrCreate([], $imageData + ['user_id' => Auth::id()]);
         return $post;
     }
 }

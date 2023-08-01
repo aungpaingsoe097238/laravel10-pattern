@@ -2,6 +2,7 @@
 
 use App\Utlis\Json;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TokenController;
 use App\Http\Controllers\Admin\api\v1\auth\AuthController;
 use App\Http\Controllers\Admin\api\v1\post\PostController;
 use App\Http\Controllers\Admin\api\v1\role\RoleController;
@@ -33,3 +34,5 @@ Route::middleware('auth:api')->group(function () {
 // Authentication Management
 Route::post('login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:api')->name('auth.logout');
+
+Route::post('/save-token', [TokenController::class, 'store']);

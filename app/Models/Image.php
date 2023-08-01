@@ -11,7 +11,15 @@ class Image extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['full_url', 'size', 'file_name', 'user_id', 'mime_type', 'disk_type'];
+    protected $fillable = ['full_url', 'size', 'file_name', 'user_id', 'mime_type', 'disk_type', 'imageable_id', 'imageable_type'];
+
+    /**
+     * Get the parent imageable model (user or post).
+     */
+    public function imageable(): MorphTo
+    {
+        return $this->morphTo();
+    }
 
     public function user(): BelongsTo
     {

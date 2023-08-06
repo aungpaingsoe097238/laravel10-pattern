@@ -42,7 +42,6 @@ class Json
         ], $statusCode);
     }
 
-
     /**
      *  Return response from resource
      */

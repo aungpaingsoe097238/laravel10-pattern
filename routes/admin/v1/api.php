@@ -2,7 +2,7 @@
 
 use App\Utlis\Json;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TokenController;
+use App\Http\Controllers\admin\api\v1\FCMController;
 use App\Http\Controllers\Admin\api\v1\auth\AuthController;
 use App\Http\Controllers\Admin\api\v1\post\PostController;
 use App\Http\Controllers\Admin\api\v1\role\RoleController;
@@ -29,10 +29,11 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('images', ImageController::class);
     // Video Management
     Route::apiResource('videos', VideoController::class);
+    // FCM Management
+    Route::post('save-token', [FCMController::class, 'saveToken'])->name('fcm.save_token');
+    Route::post('send-notification', [FCMController::class, 'sentNotification'])->name('fcm.send_notification');
 });
 
 // Authentication Management
 Route::post('login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:api')->name('auth.logout');
-
-Route::post('/save-token', [TokenController::class, 'store']);

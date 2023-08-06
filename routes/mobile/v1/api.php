@@ -4,12 +4,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Mobile\api\v1\auth\AuthController;
 use App\Http\Controllers\Mobile\api\v1\post\PostController;
 use App\Http\Controllers\Mobile\api\v1\category\CategoryController;
+use App\Http\Controllers\Mobile\api\v1\fcm\FCMController;
 
 Route::middleware('auth:api')->group(function () {
     // Post Management
     Route::apiResource('posts', PostController::class);
     // Category Management
     Route::apiResource('categories', CategoryController::class);
+    // FCM Management
+    Route::post('save-token', [FCMController::class, 'saveToken'])->name('fcm.save_token');
+    Route::post('send-notification', [FCMController::class, 'sentNotification'])->name('fcm.send_notification');
 });
 
 // Authentication Management

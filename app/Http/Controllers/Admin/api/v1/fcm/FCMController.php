@@ -1,16 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\admin\api\v1;
+namespace App\Http\Controllers\Admin\api\v1\fcm;
 
 use App\Models\FCM;
 use App\Utlis\Json;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Kreait\Firebase\Factory;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Kreait\Firebase\Messaging\CloudMessage;
-use Kreait\Firebase\Messaging\Notification;
 use App\Services\Notification\NotificationService;
 
 class FCMController extends Controller

@@ -2,7 +2,7 @@
 
 use App\Utlis\Json;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\admin\api\v1\FCMController;
+use App\Http\Controllers\Admin\api\v1\fcm\FCMController;
 use App\Http\Controllers\Admin\api\v1\auth\AuthController;
 use App\Http\Controllers\Admin\api\v1\post\PostController;
 use App\Http\Controllers\Admin\api\v1\role\RoleController;

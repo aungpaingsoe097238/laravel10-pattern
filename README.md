@@ -1,7 +1,7 @@
 
-# Pet Adoption
+# Laravel 10 Pattern
 
-Laravel 10 Pattern
+Pattern and Reference 
 
 ## Tech Stack
 
